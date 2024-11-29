@@ -174,51 +174,54 @@ export const RegisterForm = () => {
     }
 
     return(
-        <div className="flex flex-col gap-y-10 items-center">
-            <h1 className="text-4xl">Register</h1>
+        <div className="flex flex-col gap-y-10 items-center pt-32">
             {
                 serverError
                 &&
-                <div className="fixed z-50 bg-red-600 text-white p-2 rounded-lg m-2 animate-fadeInOut">
+                <div className="fixed top-0 z-50 bg-red-600 text-white p-2 rounded-lg m-2 animate-fadeInOut">
                     <p>{ serverError }</p>
                 </div>
             }
+            <h1 className="text-4xl">Register</h1>
             
-            <form className="flex flex-col max-w-64 gap-y-8" onSubmit={handleSubmit}>
-                <InputField 
-                    type='text' 
-                    id='username' 
-                    label='Username:' 
-                    name='username' 
-                    error={errors["username"]}
-                    callback={(value) => {
-                        var result = verifyUsername(value)
-                        if(result === true) {    
+            <form className="grid grid-rows-3 w-1/3 gap-y-5" onSubmit={handleSubmit}>
+                <div className='grid grid-cols-2 gap-4'>
+                    <InputField 
+                        type='text' 
+                        id='username' 
+                        label='Username:' 
+                        name='username' 
+                        error={errors["username"]}
+                        callback={(value) => {
+                            var result = verifyUsername(value)
                             setFormData({ ...formData, username: value })
-                            setErrors({ ...errors, username: "" })
-                        }
-                        else {
-                            setErrors({ ...errors, username: result })
-                        }
-                    }}
-                />
-                <InputField 
-                    type='text' 
-                    id='displayName' 
-                    label='Display name:' 
-                    name='displayName' 
-                    error={errors["displayName"]}
-                    callback={(value) => {
-                        var result = verifyDisplayName(value)
-                        if(result === true) {
+                            if(result === true) {    
+                                setErrors({ ...errors, username: "" })
+                            }
+                            else {
+                                setErrors({ ...errors, username: result })
+                            }
+                        }}
+                    />
+                    <InputField 
+                        type='text' 
+                        id='displayName' 
+                        label='Display name:' 
+                        name='displayName' 
+                        error={errors["displayName"]}
+                        callback={(value) => {
+                            var result = verifyDisplayName(value)
                             setFormData({ ...formData, displayName: value }) 
-                            setErrors({ ...errors, displayName: "" })
-                        }
-                        else {
-                            setErrors({ ...errors, displayName: result })
-                        }
-                    }}
-                />
+                            if(result === true) {
+                                setErrors({ ...errors, displayName: "" })
+                            }
+                            else {
+                                setErrors({ ...errors, displayName: result })
+                            }
+                        }}
+                    />
+                </div>
+                
                 <InputField 
                     type='text' 
                     id='email' 
@@ -227,8 +230,8 @@ export const RegisterForm = () => {
                     error={errors["email"]}
                     callback={(value) => {
                         var result = verifyEmail(value)
+                        setFormData({ ...formData, email: value })
                         if(result === true) {
-                            setFormData({ ...formData, email: value })
                             setErrors({ ...errors, email: "" })
                         }
                         else {
@@ -244,8 +247,8 @@ export const RegisterForm = () => {
                     error={errors["password"]}
                     callback={(value) => {
                         var result = verifyPassword(value)
+                        setFormData({ ...formData, password: value })
                         if(result === true) {
-                            setFormData({ ...formData, password: value })
                             setErrors({ ...errors, password: "", passwordConfirmation: "" })
                         }
                         else {
@@ -261,8 +264,8 @@ export const RegisterForm = () => {
                     error={errors["passwordConfirmation"]}
                     callback={(value) => {
                         var result = verifyPasswordConfirmation(value)
+                        setFormData({ ...formData, passwordConfirmation: value })
                         if(result === true) {
-                            setFormData({ ...formData, passwordConfirmation: value })
                             setErrors({ ...errors, passwordConfirmation: "" })
                         }
                         else {
@@ -270,7 +273,7 @@ export const RegisterForm = () => {
                         }
                     }}
                 />
-                <button type='submit' className='button-default'>Send</button>
+                <button type='submit' className='button-default m-auto'>Send</button>
             </form>
         </div>
     )
