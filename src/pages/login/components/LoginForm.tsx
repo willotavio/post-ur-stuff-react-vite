@@ -4,6 +4,7 @@ import { UserLogin } from "../../../constants/types"
 import { InputField } from "../../../components/ui/InputField"
 import { useNavigate } from "react-router-dom"
 import { ErrorToast } from "../../../components/ui/ErrorToast"
+import { XCircle } from "@phosphor-icons/react"
 
 export const LoginForm = () => {
     
@@ -95,7 +96,7 @@ export const LoginForm = () => {
             {
                 serverError
                 &&
-                <ErrorToast message={serverError} />
+                <ErrorToast message={serverError} icon={XCircle} />
             }
             <form className="grid grid-rows-2 gap-4" onSubmit={handleSubmit}>
             <InputField 

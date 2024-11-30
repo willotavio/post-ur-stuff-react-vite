@@ -4,6 +4,7 @@ import { UserAdd } from '../../constants/types';
 import { InputField } from '../../components/ui/InputField';
 import { useNavigate } from 'react-router-dom'
 import { ErrorToast } from '../../components/ui/ErrorToast';
+import { XCircle } from '@phosphor-icons/react';
 
 export const RegisterForm = () => {
     const navigate = useNavigate()
@@ -179,7 +180,7 @@ export const RegisterForm = () => {
             {
                 serverError
                 &&
-                <ErrorToast message={serverError} />
+                <ErrorToast message={serverError} icon={XCircle} />
             }
             <h1 className="text-4xl">Register</h1>
             
