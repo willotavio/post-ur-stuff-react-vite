@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import { register } from '../../services/api/user';
-import { UserAdd } from '../../constants/types';
-import { InputField } from '../../components/ui/InputField';
+import { register } from '../../../services/api/user';
+import { UserAdd } from '../../../constants/types';
+import { InputField } from '../../../components/ui/InputField';
 import { useNavigate } from 'react-router-dom'
-import { ErrorToast } from '../../components/ui/ErrorToast';
+import { ErrorToast } from '../../../components/ui/ErrorToast';
 import { XCircle } from '@phosphor-icons/react';
+import { ArrowRight } from '@phosphor-icons/react/dist/ssr';
 
 export const RegisterForm = () => {
     const navigate = useNavigate()
@@ -176,7 +177,7 @@ export const RegisterForm = () => {
     }
 
     return(
-        <div className="flex flex-col gap-y-10 items-center pt-32">
+        <div className="flex flex-col gap-8 w-1/3 m-auto p-6 rounded-lg shadow-lg">
             {
                 serverError
                 &&
@@ -184,7 +185,7 @@ export const RegisterForm = () => {
             }
             <h1 className="text-4xl">Register</h1>
             
-            <form className="grid grid-rows-3 w-1/3 gap-y-5" onSubmit={handleSubmit}>
+            <form className="grid grid-rows-3 gap-y-5" onSubmit={handleSubmit}>
                 <div className='grid grid-cols-2 gap-4'>
                     <InputField 
                         type='text' 
@@ -273,7 +274,7 @@ export const RegisterForm = () => {
                         }
                     }}
                 />
-                <button type='submit' className='button-default m-auto'>Send</button>
+                <button type='submit' className='button-default flex items-center justify-between'>Send <ArrowRight size={24} /> </button>
             </form>
         </div>
     )

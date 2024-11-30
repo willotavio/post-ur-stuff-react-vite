@@ -4,7 +4,7 @@ import { UserLogin } from "../../../constants/types"
 import { InputField } from "../../../components/ui/InputField"
 import { useNavigate } from "react-router-dom"
 import { ErrorToast } from "../../../components/ui/ErrorToast"
-import { XCircle } from "@phosphor-icons/react"
+import { ArrowRight, XCircle } from "@phosphor-icons/react"
 
 export const LoginForm = () => {
     
@@ -91,7 +91,7 @@ export const LoginForm = () => {
     }
 
     return(
-        <div className="flex flex-col gap-8 w-1/3 m-auto pt-32">
+        <div className="flex flex-col gap-8 w-1/3 m-auto p-6 rounded-lg shadow-lg">
             <h1 className="text-4xl">Login</h1>
             {
                 serverError
@@ -131,7 +131,7 @@ export const LoginForm = () => {
                     setFormErrors({ ...formErrors, passwordError })
                 }}
             />
-            <button className="button-default">Submit</button>
+            <button className="button-default flex items-center justify-between">Submit <ArrowRight size={24} /></button>
         </form>
         </div>
     )

@@ -2,7 +2,7 @@ import { LoginForm } from "./components/LoginForm"
 
 export const LoginPage = () => {
     return(
-        <div>
+        <div className="flex min-h-screen">
             <LoginForm />
         </div>
     )
