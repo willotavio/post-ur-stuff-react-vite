@@ -8,12 +8,10 @@ import { XCircle } from '@phosphor-icons/react';
 import { ArrowRight } from '@phosphor-icons/react/dist/ssr';
 
 export const RegisterForm = () => {
+    
     const navigate = useNavigate()
-
     const [formData, setFormData] = useState<Partial<UserAdd>>({} as UserAdd)
-
-    const [errors, setErrors] = useState<Record<string, string | null>>({})
-
+    const [formErrors, setFormErrors] = useState<Record<string, string | null>>({})
     const [serverError, setServerError] = useState("")
 
     useEffect(() => {
@@ -26,7 +24,7 @@ export const RegisterForm = () => {
     }, [serverError])
 
 
-    const verifyUsername = (value: string) => {
+    const validateUsername = (value: string) => {
         if(value.length >= 4
             && value.length <= 16
         ) {
@@ -46,7 +44,7 @@ export const RegisterForm = () => {
             return usernameError
         }
     }
-    const verifyDisplayName = (value: string) => {
+    const validateDisplayName = (value: string) => {
         if(value.length >= 4
             && value.length <= 32
         ) {
@@ -66,7 +64,7 @@ export const RegisterForm = () => {
             return displayNameError
         }
     }
-    const verifyEmail = (value: string) => {
+    const validateEmail = (value: string) => {
         if(value.length >= 1) {
             return true
         }
@@ -78,7 +76,7 @@ export const RegisterForm = () => {
             return emailError
         }
     }
-    const verifyPassword = (value: string) => {
+    const validatePassword = (value: string) => {
         if(value.length >= 8
         ) {
             return true
@@ -94,7 +92,7 @@ export const RegisterForm = () => {
             return passwordError
         }
     }
-    const verifyPasswordConfirmation = (value: string) => {
+    const validatePasswordConfirmation = (value: string) => {
         if(value.length >= 8
         ) {
             return true
@@ -113,39 +111,39 @@ export const RegisterForm = () => {
 
     const validateForm = () => {
         const newErrors: Record<string, string | null> = {
-            username: null,
-            displayName: null,
-            email: null,
-            password: null,
-            passwordConfirmation: null
+            usernameError: null,
+            displayNameError: null,
+            emailError: null,
+            passwordError: null,
+            passwordConfirmationError: null
         }
         
-        var usernameValidation = verifyUsername(formData.username ? formData.username as string : "")
+        var usernameValidation = validateUsername(formData.username ? formData.username as string : "")
         if(usernameValidation !== true) {
-            newErrors.username = usernameValidation
+            newErrors.usernameError = usernameValidation
         }
-        var displayNameValidation = verifyDisplayName(formData.displayName ? formData.displayName as string : "")
+        var displayNameValidation = validateDisplayName(formData.displayName ? formData.displayName as string : "")
         if(displayNameValidation !== true) {
-            newErrors.displayName = displayNameValidation
+            newErrors.displayNameError = displayNameValidation
         }
-        var emailValidation = verifyEmail(formData.email ? formData.email as string : "")
+        var emailValidation = validateEmail(formData.email ? formData.email as string : "")
         if(emailValidation !== true) {
-            newErrors.email = emailValidation
+            newErrors.emailError = emailValidation
         }
-        var passwordValidation = verifyPassword(formData.password ? formData.password as string : "")
+        var passwordValidation = validatePassword(formData.password ? formData.password as string : "")
         if(passwordValidation !== true) {
-            newErrors.password = passwordValidation
+            newErrors.passwordError = passwordValidation
         }
-        var passwordConfirmationValidation = verifyPasswordConfirmation(formData.passwordConfirmation ? formData.passwordConfirmation as string : "")
+        var passwordConfirmationValidation = validatePasswordConfirmation(formData.passwordConfirmation ? formData.passwordConfirmation as string : "")
         if(passwordConfirmationValidation !== true) {
-            newErrors.passwordConfirmation = passwordConfirmationValidation
+            newErrors.passwordConfirmationError = passwordConfirmationValidation
         }
 
         if(formData.password !== formData.passwordConfirmation) {
-            newErrors.passwordConfirmation = "Passwords don't match"
+            newErrors.passwordConfirmationError = "Passwords don't match"
         }
 
-        setErrors(newErrors)
+        setFormErrors(newErrors)
         if(Object.values(newErrors).every(value => value === "" || value === null)) {
             return true
         }
@@ -158,21 +156,20 @@ export const RegisterForm = () => {
         event.preventDefault()
         const result = validateForm()
         if(result) {
-            register(formData as UserAdd).then((result) => {
-                if(result.isSuccesful) {
-                    navigate("/")
-                }
-                else {
-                    setServerError("Bad request")
-                    setErrors({ ...errors, 
-                        username: result.responseBody.username,
-                        displayName: result.responseBody.displayName,
-                        email: result.responseBody.email,
-                        password: result.responseBody.password,
-                        passwordConfirmation: result.responseBody.passwordConfirmation,
-                    })
-                }
-            })
+            const response = await register(formData as UserAdd)
+            if(response.isSuccesful) {
+                navigate("/")
+            }
+            else {
+                setServerError("Bad request")
+                setFormErrors({ ...formErrors, 
+                    usernameError: response.responseBody.username,
+                    displayNameError: response.responseBody.displayName,
+                    emailError: response.responseBody.email,
+                    passwordError: response.responseBody.password,
+                    passwordConfirmationError: response.responseBody.passwordConfirmation,
+                })
+            }
         }
     }
 
@@ -192,16 +189,15 @@ export const RegisterForm = () => {
                         id='username' 
                         label='Username:' 
                         name='username' 
-                        error={errors["username"]}
+                        error={formErrors.usernameError}
                         callback={(value) => {
-                            var result = verifyUsername(value)
+                            const result = validateUsername(value)
                             setFormData({ ...formData, username: value })
-                            if(result === true) {    
-                                setErrors({ ...errors, username: "" })
+                            var usernameError = ""
+                            if(result !== true) {    
+                                usernameError = result
                             }
-                            else {
-                                setErrors({ ...errors, username: result })
-                            }
+                            setFormErrors({ ...formErrors, usernameError })
                         }}
                     />
                     <InputField 
@@ -209,16 +205,15 @@ export const RegisterForm = () => {
                         id='displayName' 
                         label='Display name:' 
                         name='displayName' 
-                        error={errors["displayName"]}
+                        error={formErrors.displayNameError}
                         callback={(value) => {
-                            var result = verifyDisplayName(value)
+                            const result = validateDisplayName(value)
                             setFormData({ ...formData, displayName: value }) 
-                            if(result === true) {
-                                setErrors({ ...errors, displayName: "" })
+                            var displayNameError = ""
+                            if(result !== true) {
+                                displayNameError = result
                             }
-                            else {
-                                setErrors({ ...errors, displayName: result })
-                            }
+                            setFormErrors({ ...formErrors, displayNameError })
                         }}
                     />
                 </div>
@@ -228,16 +223,15 @@ export const RegisterForm = () => {
                     id='email' 
                     label='Email:' 
                     name='email' 
-                    error={errors["email"]}
+                    error={formErrors.emailError}
                     callback={(value) => {
-                        var result = verifyEmail(value)
+                        const result = validateEmail(value)
                         setFormData({ ...formData, email: value })
-                        if(result === true) {
-                            setErrors({ ...errors, email: "" })
+                        var emailError = ""
+                        if(result !== true) {
+                            emailError = result
                         }
-                        else {
-                            setErrors({ ...errors, email: result })
-                        }
+                        setFormErrors({ ...formErrors, emailError })
                     }}
                 />
                 <InputField 
@@ -245,16 +239,15 @@ export const RegisterForm = () => {
                     id='password' 
                     label='Password:'  
                     name='password' 
-                    error={errors["password"]}
+                    error={formErrors.passwordError}
                     callback={(value) => {
-                        var result = verifyPassword(value)
+                        const result = validatePassword(value)
                         setFormData({ ...formData, password: value })
-                        if(result === true) {
-                            setErrors({ ...errors, password: "", passwordConfirmation: "" })
+                        var passwordError = ""
+                        if(result !== true) {
+                            passwordError = result
                         }
-                        else {
-                            setErrors({ ...errors, password: result})
-                        }
+                        setFormErrors({ ...formErrors, passwordError, passwordConfirmationError: ""})
                     }}
                 />
                 <InputField 
@@ -262,16 +255,15 @@ export const RegisterForm = () => {
                     id='passwordConfirmation' 
                     label='Password Confirmation:' 
                     name='passwordConfirmation' 
-                    error={errors["passwordConfirmation"]}
+                    error={formErrors.passwordConfirmationError}
                     callback={(value) => {
-                        var result = verifyPasswordConfirmation(value)
+                        const result = validatePasswordConfirmation(value)
                         setFormData({ ...formData, passwordConfirmation: value })
-                        if(result === true) {
-                            setErrors({ ...errors, passwordConfirmation: "" })
+                        var passwordConfirmationError = ""
+                        if(result !== true) {
+                            passwordConfirmationError = result
                         }
-                        else {
-                            setErrors({ ...errors, passwordConfirmation: result })
-                        }
+                        setFormErrors({ ...formErrors, passwordConfirmationError })
                     }}
                 />
                 <button type='submit' className='button-default flex items-center justify-between'>Send <ArrowRight size={24} /> </button>

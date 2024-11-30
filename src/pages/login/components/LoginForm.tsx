@@ -58,9 +58,9 @@ export const LoginForm = () => {
     }
 
     const validateForm = () => {
-        var newFormErrors = {
-            usernameError: "",
-            passwordError: ""
+        const newFormErrors: Record<string, string | null> = {
+            usernameError: null,
+            passwordError: null
         }
         const validatedUsername = validateUsername(formData.username ? formData.username : "")
         if(validatedUsername !== true) {
