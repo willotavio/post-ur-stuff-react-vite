@@ -3,6 +3,7 @@ import { register } from '../../services/api/user';
 import { UserAdd } from '../../constants/types';
 import { InputField } from '../../components/ui/InputField';
 import { useNavigate } from 'react-router-dom'
+import { ErrorToast } from '../../components/ui/ErrorToast';
 
 export const RegisterForm = () => {
     const navigate = useNavigate()
@@ -178,9 +179,7 @@ export const RegisterForm = () => {
             {
                 serverError
                 &&
-                <div className="fixed top-0 z-50 bg-red-600 text-white p-2 rounded-lg m-2 animate-fadeInOut">
-                    <p>{ serverError }</p>
-                </div>
+                <ErrorToast message={serverError} />
             }
             <h1 className="text-4xl">Register</h1>
             

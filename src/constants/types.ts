@@ -20,6 +20,11 @@ export type UserAdd = {
     passwordConfirmation: string;
 }
 
+export type UserLogin = {
+    username: string,
+    password: string
+}
+
 export type UserUpdate = {
     username?: string,
     displayName?: string,
