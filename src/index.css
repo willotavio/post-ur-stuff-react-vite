@@ -12,5 +12,5 @@ body {
 }
 
 .button-default {
-    @apply bg-blue-400 text-white w-2/3 max-w-64 rounded-lg p-2 hover:bg-opacity-80
+    @apply bg-blue-400 text-white rounded-lg p-2 hover:bg-opacity-80
 }

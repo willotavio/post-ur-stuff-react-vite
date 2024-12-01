@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import { ErrorToast } from '../../../components/ui/ErrorToast';
 import { XCircle } from '@phosphor-icons/react';
 import { ArrowRight } from '@phosphor-icons/react/dist/ssr';
+import { Link } from 'react-router-dom'
 
 export const RegisterForm = () => {
     
@@ -174,7 +175,7 @@ export const RegisterForm = () => {
     }
 
     return(
-        <div className="flex flex-col gap-8 w-1/3 m-auto p-6 rounded-lg shadow-lg">
+        <div className="flex flex-col gap-8 w-2/3 sm:w-[24rem] m-auto p-6 rounded-lg shadow-lg">
             {
                 serverError
                 &&
@@ -182,12 +183,12 @@ export const RegisterForm = () => {
             }
             <h1 className="text-4xl">Register</h1>
             
-            <form className="grid grid-rows-3 gap-y-5" onSubmit={handleSubmit}>
+            <form className='flex flex-col gap-y-4' onSubmit={handleSubmit}>
                 <div className='grid grid-cols-2 gap-4'>
                     <InputField 
                         type='text' 
                         id='username' 
-                        label='Username:' 
+                        label='Username' 
                         name='username' 
                         error={formErrors.usernameError}
                         callback={(value) => {
@@ -203,7 +204,7 @@ export const RegisterForm = () => {
                     <InputField 
                         type='text' 
                         id='displayName' 
-                        label='Display name:' 
+                        label='Display name' 
                         name='displayName' 
                         error={formErrors.displayNameError}
                         callback={(value) => {
@@ -221,7 +222,7 @@ export const RegisterForm = () => {
                 <InputField 
                     type='text' 
                     id='email' 
-                    label='Email:' 
+                    label='Email' 
                     name='email' 
                     error={formErrors.emailError}
                     callback={(value) => {
@@ -237,7 +238,7 @@ export const RegisterForm = () => {
                 <InputField 
                     type='password' 
                     id='password' 
-                    label='Password:'  
+                    label='Password'  
                     name='password' 
                     error={formErrors.passwordError}
                     callback={(value) => {
@@ -253,7 +254,7 @@ export const RegisterForm = () => {
                 <InputField 
                     type='password' 
                     id='passwordConfirmation' 
-                    label='Password Confirmation:' 
+                    label='Password Confirmation' 
                     name='passwordConfirmation' 
                     error={formErrors.passwordConfirmationError}
                     callback={(value) => {
@@ -266,7 +267,8 @@ export const RegisterForm = () => {
                         setFormErrors({ ...formErrors, passwordConfirmationError })
                     }}
                 />
-                <button type='submit' className='button-default flex items-center justify-between'>Send <ArrowRight size={24} /> </button>
+                <button type='submit' className='button-default sm:w-1/3 w-2/3 flex items-center justify-between'>Submit<ArrowRight size={24} /></button>
+                <Link className='text-xs text-neutral-500 hover:opacity-80' to={"/login"}>Already have an account?</Link>
             </form>
         </div>
     )

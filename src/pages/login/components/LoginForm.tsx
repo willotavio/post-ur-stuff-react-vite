@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { login } from "../../../services/api/user"
 import { UserLogin } from "../../../constants/types"
 import { InputField } from "../../../components/ui/InputField"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { ErrorToast } from "../../../components/ui/ErrorToast"
 import { ArrowRight, XCircle } from "@phosphor-icons/react"
 
@@ -91,48 +91,49 @@ export const LoginForm = () => {
     }
 
     return(
-        <div className="flex flex-col gap-8 w-1/3 m-auto p-6 rounded-lg shadow-lg">
+        <div className="flex flex-col gap-8 w-2/3 sm:w-[24rem] m-auto p-6 rounded-lg shadow-lg">
             <h1 className="text-4xl">Login</h1>
             {
                 serverError
                 &&
                 <ErrorToast message={serverError} icon={XCircle} />
             }
-            <form className="grid grid-rows-2 gap-4" onSubmit={handleSubmit}>
-            <InputField 
-                type="text"
-                id="username" 
-                name="username"
-                label="Username"
-                error={formErrors.usernameError}
-                callback={(value) => {
-                    const result = validateUsername(value)
-                    setFormData({ ...formData, username: value })
-                    var usernameError = ""
-                    if(result !== true) {
-                        usernameError = result
-                    }
-                    setFormErrors({ ...formErrors, usernameError })
-                }}
-            />
-            <InputField 
-                type="password"
-                id="password" 
-                name="password"
-                label="password"
-                error={formErrors.passwordError}
-                callback={(value) => {
-                    var result = validatePassword(value)
-                    setFormData({ ...formData, password: value })
-                    var passwordError = ""
-                    if(result !== true) {
-                        passwordError = result
-                    }
-                    setFormErrors({ ...formErrors, passwordError })
-                }}
-            />
-            <button className="button-default flex items-center justify-between">Submit <ArrowRight size={24} /></button>
-        </form>
+            <form className="flex flex-col gap-y-4" onSubmit={handleSubmit}>
+                <InputField 
+                    type="text"
+                    id="username" 
+                    name="username"
+                    label="Username"
+                    error={formErrors.usernameError}
+                    callback={(value) => {
+                        const result = validateUsername(value)
+                        setFormData({ ...formData, username: value })
+                        var usernameError = ""
+                        if(result !== true) {
+                            usernameError = result
+                        }
+                        setFormErrors({ ...formErrors, usernameError })
+                    }}
+                />
+                <InputField 
+                    type="password"
+                    id="password" 
+                    name="password"
+                    label="Password"
+                    error={formErrors.passwordError}
+                    callback={(value) => {
+                        var result = validatePassword(value)
+                        setFormData({ ...formData, password: value })
+                        var passwordError = ""
+                        if(result !== true) {
+                            passwordError = result
+                        }
+                        setFormErrors({ ...formErrors, passwordError })
+                    }}
+                />
+                <button className="button-default flex sm:w-1/3 w-2/3  items-center justify-between">Submit<ArrowRight size={24} /></button>
+                <Link className='text-xs text-neutral-500 hover:opacity-80' to={"/register"}>Don't have an account yet?</Link>
+            </form>
         </div>
     )
 }
