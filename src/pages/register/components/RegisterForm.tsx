@@ -158,7 +158,7 @@ export const RegisterForm = () => {
         const result = validateForm()
         if(result) {
             const response = await register(formData as UserAdd)
-            if(response.isSuccesful) {
+            if(response.isSuccessful) {
                 navigate("/")
             }
             else {

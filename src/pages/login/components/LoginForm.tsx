@@ -81,7 +81,7 @@ export const LoginForm = () => {
         const result = validateForm()
         if(result) {
             const response = await login(formData as UserLogin)
-            if(response.isSuccesful) {
+            if(response.isSuccessful) {
                 navigate("/")
             }
             else {
