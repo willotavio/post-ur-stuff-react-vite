@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { register } from '../../../services/api/user';
-import { UserAdd } from '../../../constants/types';
+import { UserAdd } from '../../../constants/types/user';
 import { InputField } from '../../../components/ui/InputField';
 import { useNavigate } from 'react-router-dom'
 import { ErrorToast } from '../../../components/ui/ErrorToast';

@@ -1,4 +1,4 @@
-import { UserVisibility } from "./enums";
+import { UserVisibility } from "../enums";
 
 export type User = {
     id: string,

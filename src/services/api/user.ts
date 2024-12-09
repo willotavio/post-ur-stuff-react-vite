@@ -1,4 +1,4 @@
-import { UserAdd, UserLogin } from "../../constants/types";
+import { UserAdd, UserLogin } from "../../constants/types/user";
 import { apiFetch } from "./apiFetch";
 
 export const register = (user: UserAdd) => {
