@@ -1,9 +1,9 @@
 export enum UserVisibility {
-    public = 1,
-    private = 2
+    PUBLIC = 1,
+    PRIVATE = 2
 }
 
 export enum PostVisibility {
-    public = 1,
-    private = 2
+    PUBLIC = 1,
+    PRIVATE = 2
 }
