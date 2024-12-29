@@ -15,6 +15,7 @@ export const AddPostForm = ({ callback }: TProps) => {
     const [formErrors, setFormErrors] = useState<Record<string, string | null>>({})
     const [serverMessage, setServerMessage] = useState("")
 
+    const formRef = useRef<HTMLFormElement>(null)
     const contentRef = useRef<HTMLTextAreaElement>(null)
 
     const handleContentRef = () => {
@@ -78,6 +79,7 @@ export const AddPostForm = ({ callback }: TProps) => {
             const response = await addPost(formData)
             if(response.isSuccessful) {
                 setServerMessage("Posted successfully")
+                formRef.current?.reset()
                 if(callback) {
                     callback()
                 }
@@ -90,25 +92,31 @@ export const AddPostForm = ({ callback }: TProps) => {
     }
 
     return(
-        <div className="flex flex-col gap-8 w-2/3 sm:w-[24rem] m-auto p-6 rounded-lg">
+        <div className="flex flex-col gap-8 w-2/3 sm:w-[24rem] p-6 rounded-lg">
             {
                 serverMessage
                 &&
                 <ErrorToast message={ serverMessage } icon={ XCircle } />
             }
-            <form className="flex flex-col gap-y-4 h-auto" onSubmit={(e) => handleSubmit(e)}>
-                <textarea ref={contentRef} className="focus:outline-none overflow-auto min-h-10 resize-none text-sm" maxLength={200} placeholder="wazzup?!" onChange={
-                    (e) => {
-                        handleContentRef()
-                        const result = validateContent(e.target.value)
-                        setFormData({ ...formData, content: e.target.value })
-                        var contentError = ""
-                        if(result !== true) {
-                            contentError = result
+            <form className="flex flex-col gap-y-4 h-auto" ref={formRef} onSubmit={(e) => handleSubmit(e)}>
+                <textarea 
+                    ref={contentRef} 
+                    className="focus:outline-none overflow-auto min-h-10 resize-none text-sm bg-transparent" 
+                    maxLength={200} 
+                    placeholder="wazzup?!" 
+                    onChange={
+                        (e) => {
+                            handleContentRef()
+                            const result = validateContent(e.target.value)
+                            setFormData({ ...formData, content: e.target.value })
+                            var contentError = ""
+                            if(result !== true) {
+                                contentError = result
+                            }
+                            setFormErrors({ ...formErrors, contentError })
                         }
-                        setFormErrors({ ...formErrors, contentError })
-                    }
-                }></textarea>
+                    }>
+                </textarea>
                 <div className="grid grid-cols-2 items-center">
                     <small className={`text-xs ${formErrors.contentError && "text-red-500"}`}>{formData.content && formData.content.length > 0 ? formData.content?.length : 0}</small>
                     <div className="ml-auto hover:cursor-pointer" title="Post visibility" onClick={ () => toggleVisibility() }>{

@@ -1,69 +1,57 @@
-import { logout } from "../services/api/user"
-import { Link } from "react-router-dom"
 import { useIsAuth } from "../hooks/useIsAuth"
 import { useEffect, useState } from "react"
-import { Modal } from "../components/ui/Modal"
 import { AddPostForm } from "../components/AddPostForm"
 import { getAllPublicPosts } from "../services/api/post"
 import { Post } from "../constants/types/post"
 import { PostList } from "../components/PostList"
+import { SideBar } from "../components/SideBar"
 
 export const Home = () => {
-    const [isOpen, setIsOpen] = useState(false)
-
     const isLoggedIn = useIsAuth()
 
     const [postList, setPostList] = useState<Post[]>([])
     useEffect(() => {
+        if(isLoggedIn) {
+            fetchPosts()
+        }
+    }, [isLoggedIn])
+
+    const fetchPosts = () => {
         async function getPosts() {
             const response = await getAllPublicPosts();
             if(response.isSuccessful) {
-                var tempPostList: Post[] = response.responseBody.posts
-                tempPostList.sort((a, b) => {
+                var newPostList: Post[] = response.responseBody.posts
+                newPostList.sort((a, b) => {
                     return Date.parse(b.createdAt.toString()) - Date.parse(a.createdAt.toString())
                 })
-                setPostList(tempPostList)
+                setPostList(newPostList)
             }
         }
-        if(isLoggedIn) {
-            getPosts()
-        }
-    }, [postList, isLoggedIn])
-
-    const logoutUser = async () => {
-        const result = await logout()
-        console.log(result)
+        getPosts()
     }
 
     return(
-        <div className="flex flex-col items-center gap-4">
-            {
-                isLoggedIn
-                ? <>
-                    <button className="button-default" onClick={ () => logoutUser() }>Logout</button>
-                    <button className="button-default" onClick={() => setIsOpen(!isOpen)}>New post</button>
-                    {
-                        isOpen
-                        &&
-                        <Modal setIsOpen={ setIsOpen } >
-                            <div>
-                                <AddPostForm callback={() => {
-                                    setIsOpen(false)
-                                    setPostList([])
-                                }} />
-                            </div>
-                        </Modal>
-                    }
+        <div className="grid grid-cols-4 min-h-screen">
+            <div className="col-span-1">
+                <SideBar />
+            </div>
+            <div className="flex flex-col items-center gap-4 col-span-2">
+                {
+                    isLoggedIn
+                    ? <>
+                        <AddPostForm callback={() => {
+                            fetchPosts()
+                        }} />
+                        <PostList postList={postList} />
+                    </>
+                        
+                    : 
+                    <>
+                    </>
+                }
+                <br />
 
-                    <PostList postList={postList} />
-                </>
-                    
-                : <>
-                    <Link className="button-default" to={"/login"}>Login</Link>
-                </>
-            }
-            <br />
-
+            </div>
         </div>
     )
 }
