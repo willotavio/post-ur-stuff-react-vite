@@ -25,8 +25,10 @@ export const Home = () => {
                 setPostList(tempPostList)
             }
         }
-        getPosts()
-    }, [postList])
+        if(isLoggedIn) {
+            getPosts()
+        }
+    }, [postList, isLoggedIn])
 
     const logoutUser = async () => {
         const result = await logout()

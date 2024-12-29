@@ -13,7 +13,6 @@ export const apiFetch = async (url: string, options: RequestInit) => {
         }
     
         options = { ...defaultOptions, ...options }
-    
         let response = await fetch(
             `${import.meta.env.VITE_POSTURSTUFF_API_URI}${url}`, options)
         
