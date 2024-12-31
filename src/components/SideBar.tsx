@@ -43,9 +43,7 @@ export const SideBar = () => {
                         &&
                         <Modal setIsOpen={ setIsOpen } >
                             <div>
-                                <AddPostForm callback={() => {
-                                    setIsOpen(false)
-                                }} />
+                                <AddPostForm callback={() => {}} />
                             </div>
                         </Modal>
                     }

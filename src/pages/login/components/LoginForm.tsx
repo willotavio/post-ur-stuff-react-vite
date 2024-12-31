@@ -3,7 +3,7 @@ import { login } from "../../../services/api/user"
 import { UserLogin } from "../../../constants/types/user"
 import { InputField } from "../../../components/ui/InputField"
 import { Link, useNavigate } from "react-router-dom"
-import { ErrorToast } from "../../../components/ui/ErrorToast"
+import { ToastMessage } from "../../../components/ui/ToastMessage"
 import { ArrowRight, XCircle } from "@phosphor-icons/react"
 
 export const LoginForm = () => {
@@ -96,7 +96,7 @@ export const LoginForm = () => {
             {
                 serverError
                 &&
-                <ErrorToast message={serverError} icon={XCircle} />
+                <ToastMessage message={serverError} icon={XCircle} backgroundColor="error" />
             }
             <form className="flex flex-col gap-y-4" onSubmit={handleSubmit}>
                 <InputField 

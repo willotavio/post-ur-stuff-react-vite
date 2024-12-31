@@ -3,7 +3,7 @@ import { register } from '../../../services/api/user';
 import { UserAdd } from '../../../constants/types/user';
 import { InputField } from '../../../components/ui/InputField';
 import { useNavigate } from 'react-router-dom'
-import { ErrorToast } from '../../../components/ui/ErrorToast';
+import { ToastMessage } from '../../../components/ui/ToastMessage';
 import { XCircle } from '@phosphor-icons/react';
 import { ArrowRight } from '@phosphor-icons/react/dist/ssr';
 import { Link } from 'react-router-dom'
@@ -179,7 +179,7 @@ export const RegisterForm = () => {
             {
                 serverError
                 &&
-                <ErrorToast message={serverError} icon={XCircle} />
+                <ToastMessage message={serverError} icon={XCircle} backgroundColor='error' />
             }
             <h1 className="text-4xl">Register</h1>
             

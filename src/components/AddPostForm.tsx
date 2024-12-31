@@ -1,9 +1,9 @@
 import { useRef, useState } from "react"
 import { PostAdd } from "../constants/types/post"
 import { PostVisibility } from "../constants/enums"
-import { Globe, Lock, XCircle } from "@phosphor-icons/react"
+import { Globe, Lock, Check } from "@phosphor-icons/react"
 import { addPost } from "../services/api/post"
-import { ErrorToast } from "./ui/ErrorToast"
+import { ToastMessage } from "./ui/ToastMessage"
 
 type TProps = {
     callback?: () => void
@@ -79,6 +79,7 @@ export const AddPostForm = ({ callback }: TProps) => {
             const response = await addPost(formData)
             if(response.isSuccessful) {
                 setServerMessage("Posted successfully")
+                setFormData({ ...formData, content: "" })
                 formRef.current?.reset()
                 if(callback) {
                     callback()
@@ -96,7 +97,7 @@ export const AddPostForm = ({ callback }: TProps) => {
             {
                 serverMessage
                 &&
-                <ErrorToast message={ serverMessage } icon={ XCircle } />
+                <ToastMessage message={ serverMessage } icon={ Check } backgroundColor="success" />
             }
             <form className="flex flex-col gap-y-4 h-auto" ref={formRef} onSubmit={(e) => handleSubmit(e)}>
                 <textarea 
