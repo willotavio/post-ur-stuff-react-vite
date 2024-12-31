@@ -2,6 +2,7 @@ import { useEffect } from "react"
 import { useIsAuth } from "../../hooks/useIsAuth"
 import { LoginForm } from "./components/LoginForm"
 import { useNavigate } from "react-router-dom"
+import { MainLayout } from "../../layouts/MainLayout"
 
 export const LoginPage = () => {
     const navigate = useNavigate()
@@ -15,8 +16,10 @@ export const LoginPage = () => {
     return(
         !isLoggedIn
         &&
-        <div className="flex min-h-screen">
-            <LoginForm />
-        </div>
+        <MainLayout>
+            <div className="flex min-h-screen">
+                <LoginForm />
+            </div>
+        </MainLayout>
     )
 }

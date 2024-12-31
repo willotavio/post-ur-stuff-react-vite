@@ -4,7 +4,7 @@ import { AddPostForm } from "../components/AddPostForm"
 import { getAllPublicPosts } from "../services/api/post"
 import { Post } from "../constants/types/post"
 import { PostList } from "../components/PostList"
-import { SideBar } from "../components/SideBar"
+import { MainLayout } from "../layouts/MainLayout"
 
 export const Home = () => {
     const isLoggedIn = useIsAuth()
@@ -31,11 +31,8 @@ export const Home = () => {
     }
 
     return(
-        <div className="grid grid-cols-4 min-h-screen">
-            <div className="col-span-1">
-                <SideBar />
-            </div>
-            <div className="flex flex-col items-center gap-4 col-span-2">
+        <MainLayout>
+            <div className="flex flex-col items-center gap-4 ">
                 {
                     isLoggedIn
                     ? <>
@@ -52,6 +49,6 @@ export const Home = () => {
                 <br />
 
             </div>
-        </div>
+        </MainLayout>
     )
 }
