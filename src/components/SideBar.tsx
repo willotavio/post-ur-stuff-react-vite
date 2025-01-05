@@ -3,7 +3,7 @@ import { useIsAuth } from "../hooks/useIsAuth"
 import { AddPostForm } from "./AddPostForm"
 import { Modal } from "./ui/Modal"
 import { logout } from "../services/api/user"
-import { Gear, NotePencil, SignIn, SignOut, User, UserPlus } from "@phosphor-icons/react"
+import { Gear, House, NotePencil, SignIn, SignOut, User, UserPlus } from "@phosphor-icons/react"
 import { Link } from "react-router-dom"
 
 export const SideBar = () => {
@@ -12,8 +12,7 @@ export const SideBar = () => {
     const isLoggedIn = useIsAuth()
 
     const logoutUser = async () => {
-        const result = await logout()
-        console.log(result)
+        await logout()
     }
 
     return(
@@ -22,11 +21,18 @@ export const SideBar = () => {
                 isLoggedIn
                 ?
                 <>
-                    <button 
-                        className="button-default flex flex-row gap-2 justify-center sm:justify-normal">
+                    <Link
+                        className="button-default flex flex-row gap-2 justify-center sm:justify-normal"
+                        to={"/"}>
+                        <House size={24} />
+                        <p className="hidden sm:block">Home</p>
+                    </Link>
+                    <Link
+                        className="button-default flex flex-row gap-2 justify-center sm:justify-normal"
+                        to={"/profile"}>
                         <User size={24} />
                         <p className="hidden sm:block">Profile</p>
-                    </button>
+                    </Link>
                     <button 
                         className="button-default flex flex-row gap-2 justify-center sm:justify-normal">
                         <Gear size={24} />

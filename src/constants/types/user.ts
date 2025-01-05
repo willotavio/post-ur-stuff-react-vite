@@ -9,7 +9,8 @@ export type User = {
     birthDate: Date,
     accountVisibility: UserVisibility
     profilePicture?: string,
-    profileCover?: string
+    profileCover?: string,
+    description?: string
 }
 
 export type UserAdd = {
@@ -32,5 +33,6 @@ export type UserUpdate = {
     birthDate?: Date,
     accountVisibility?: UserVisibility,
     profilePicture?: string,
-    profileCover?: string
+    profileCover?: string,
+    description?: string
 }

@@ -61,3 +61,15 @@ export const getAllUsers = () => {
         method: "GET"
     })
 }
+
+export const getOwnProfile = () => {
+    return apiFetch("/user/me", {
+        method: "GET"
+    })
+}
+
+export const getProfileByUsername = (username: string) => {
+    return apiFetch(`/user/username/${username}`, {
+        method: "GET"
+    })
+}
