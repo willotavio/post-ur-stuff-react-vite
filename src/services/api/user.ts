@@ -1,4 +1,4 @@
-import { UserAdd, UserLogin } from "../../constants/types/user";
+import { UserAdd, UserLogin, UserUpdate } from "../../constants/types/user";
 import { apiFetch } from "./apiFetch";
 
 export const register = async (user: UserAdd) => {
@@ -71,5 +71,12 @@ export const getOwnProfile = () => {
 export const getProfileByUsername = (username: string) => {
     return apiFetch(`/user/username/${username}`, {
         method: "GET"
+    })
+}
+
+export const updateProfile = (user: UserUpdate) => {
+    return apiFetch(`/user`, {
+        method: "PATCH",
+        body: JSON.stringify(user)
     })
 }
