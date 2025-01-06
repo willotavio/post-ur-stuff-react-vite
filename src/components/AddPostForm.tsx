@@ -93,7 +93,7 @@ export const AddPostForm = ({ callback }: TProps) => {
     }
 
     return(
-        <div className="flex flex-col gap-8 w-2/3 sm:w-[24rem] p-6 rounded-lg">
+        <div className="flex flex-col gap-8 p-6 rounded-lg">
             {
                 serverMessage
                 &&

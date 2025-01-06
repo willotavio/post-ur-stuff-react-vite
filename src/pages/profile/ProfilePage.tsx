@@ -8,12 +8,15 @@ import { getOwnPosts, getPublicPostsByUserId } from "../../services/api/post"
 import { Post } from "../../constants/types/post"
 import { PostList } from "../../components/PostList"
 import { UserCard } from "../../components/UserCard"
+import { AddPostForm } from "../../components/AddPostForm"
 
 export const ProfilePage = () => {
     const { username } = useParams()
 
     const navigate = useNavigate()
     const isLoggedIn = useIsAuth()
+
+    const [isOwnProfile, setIsOwnProfile] = useState(false)
 
     const [user, setUser] = useState<User | null>(null)
     const [posts, setPosts] = useState<Post[]>([])
@@ -30,6 +33,7 @@ export const ProfilePage = () => {
                 setUser(user)
                 let posts: Post[]
                 if(loggedUser.id === user?.id) {
+                    setIsOwnProfile(true)
                     posts = await fetchOwnPosts()
                 }
                 else {
@@ -87,8 +91,17 @@ export const ProfilePage = () => {
             &&
             user
             ?
-            <div className="flex flex-col gap-10">
+            <div className="flex flex-col gap-6">
                 <UserCard user={user} />
+                {
+                    isOwnProfile
+                    &&
+                    <div className="w-1/2 m-auto">
+                        <AddPostForm callback={ async () => {
+                            setPosts(await fetchOwnPosts())
+                        } } />
+                    </div>
+                }
                 <div className="w-1/2 m-auto">
                     <PostList postList={posts} />
                 </div>
