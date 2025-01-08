@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { User, UserUpdate } from "../../../constants/types/user"
 import { ToastMessage } from "../../../components/ui/ToastMessage"
 import { InputField } from "../../../components/ui/InputField"
-import { ArrowRight, XCircle } from "@phosphor-icons/react"
+import { ArrowRight, Check, XCircle } from "@phosphor-icons/react"
 import { updateProfile } from "../../../services/api/user"
 
 type TProps = {
@@ -12,7 +12,7 @@ type TProps = {
 export const UpdateUserForm = ({ userData }: TProps) => {
     const [formData, setFormData] = useState<UserUpdate>({})
     const [formErrors, setFormErrors] = useState<Record<string, string | null>>({})
-    const [serverMessage, setServerMessage] = useState("")
+    const [serverMessage, setServerMessage] = useState<React.ReactNode | null>(null)
 
     useEffect(() => {
         setFormData({
@@ -26,7 +26,7 @@ export const UpdateUserForm = ({ userData }: TProps) => {
     useEffect(() => {
         if(serverMessage) {
             const timer = setTimeout(() => {
-                setServerMessage("")
+                setServerMessage(null)
             }, 5000)
             return () => clearTimeout(timer)
         }
@@ -118,16 +118,26 @@ export const UpdateUserForm = ({ userData }: TProps) => {
         event.preventDefault()
         const result = validateForm()
         if(result) {
-            if(formData.username === userData.username
+            if(!(formData.username === userData.username
                 && formData.displayName === userData.displayName
                 && formData.description === userData.description
-                && formData.birthDate === userData.birthDate
+                && formData.birthDate === userData.birthDate)
             ) {
-                console.log("qwie")
-            }
-            else {
                 const response = await updateProfile(formData)
-                console.log(response)
+                if(response.isSuccessful) {
+                    setServerMessage(<ToastMessage message={"Profile updated"} icon={Check} backgroundColor="success" />)
+                }
+                else {
+                    setServerMessage(<ToastMessage message={"Bad request"} icon={XCircle} backgroundColor="error" />)
+                    setFormErrors({ ...formErrors, 
+                        usernameError: response.responseBody.username,
+                        displayNameError: response.responseBody.displayName,
+                        emailError: response.responseBody.email,
+                        passwordError: response.responseBody.password,
+                        passwordConfirmationError: response.responseBody.passwordConfirmation,
+                        birthDateError: response.responseBody.birthDate
+                    })
+                }
             }
         }
         else {
@@ -138,9 +148,7 @@ export const UpdateUserForm = ({ userData }: TProps) => {
     return (
         <div className="flex flex-col gap-8 w-2/3 sm:w-[24rem] m-auto p-6 rounded-lg shadow-lg">
             {
-                serverMessage
-                &&
-                <ToastMessage message={serverMessage} icon={XCircle} backgroundColor="error" />
+                serverMessage ?? ""
             }
             <form className="flex flex-col gap-y-4" onSubmit={handleSubmit}>
                 <div className="grid grid-cols-2 gap-4">

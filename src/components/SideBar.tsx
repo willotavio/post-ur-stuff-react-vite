@@ -33,11 +33,12 @@ export const SideBar = () => {
                         <User size={24} />
                         <p className="hidden sm:block">Profile</p>
                     </Link>
-                    <button 
-                        className="button-default flex flex-row gap-2 justify-center sm:justify-normal">
+                    <Link 
+                        className="button-default flex flex-row gap-2 justify-center sm:justify-normal"
+                        to={"/configuration"}>
                         <Gear size={24} />
                         <p className="hidden sm:block">Configuration</p>
-                    </button>
+                    </Link>
                     <button 
                         className="button-default flex flex-row gap-2 justify-center sm:justify-normal" 
                         onClick={() => setIsOpen(!isOpen)}>
