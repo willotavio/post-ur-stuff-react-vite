@@ -4,12 +4,14 @@ import { ToastMessage } from "../../../components/ui/ToastMessage"
 import { InputField } from "../../../components/ui/InputField"
 import { ArrowRight, Check, XCircle } from "@phosphor-icons/react"
 import { updateProfile } from "../../../services/api/user"
+import { useAuth } from "../../../context/AuthContext"
 
 type TProps = {
     userData: User
 }
 
 export const UpdateUserForm = ({ userData }: TProps) => {
+    const { fetchOwnProfile } = useAuth()
     const [formData, setFormData] = useState<UserUpdate>({})
     const [formErrors, setFormErrors] = useState<Record<string, string | null>>({})
     const [serverMessage, setServerMessage] = useState<React.ReactNode | null>(null)
@@ -125,6 +127,7 @@ export const UpdateUserForm = ({ userData }: TProps) => {
             ) {
                 const response = await updateProfile(formData)
                 if(response.isSuccessful) {
+                    await fetchOwnProfile()
                     setServerMessage(<ToastMessage message={"Profile updated"} icon={Check} backgroundColor="success" />)
                 }
                 else {
@@ -139,9 +142,6 @@ export const UpdateUserForm = ({ userData }: TProps) => {
                     })
                 }
             }
-        }
-        else {
-            console.log(result)
         }
     }
     
