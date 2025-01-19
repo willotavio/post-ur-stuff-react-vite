@@ -8,12 +8,12 @@ import { useAuth } from "../context/AuthContext"
 export const SideBar = () => {
     const [isOpen, setIsOpen] = useState(false)
 
-    const authContext = useAuth()
+    const { isLoggedIn, logoutUser } = useAuth()
 
     return(
         <div className="flex flex-col gap-2 border-solid border-r-2 border-gray-300 p-2 h-full">
             {
-                authContext.isLoggedIn
+                isLoggedIn
                 ?
                 <>
                     <Link
@@ -51,7 +51,7 @@ export const SideBar = () => {
                     }
                     <button 
                         className="button-default !bg-gray-600 hover:!bg-opacity-80 flex flex-row gap-2 justify-center sm:justify-normal" 
-                        onClick={ () => authContext.logoutUser() }>
+                        onClick={ () => logoutUser() }>
                         <SignOut size={24} />
                         <p className="hidden sm:block">Logout</p>
                     </button>

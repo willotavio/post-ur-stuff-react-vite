@@ -1,41 +1,29 @@
-import { useEffect, useState } from "react"
-import { useIsAuth } from "../../hooks/useIsAuth"
+import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { MainLayout } from "../../layouts/MainLayout"
 import { UpdateUserForm } from "../profile/components/UpdateUserForm"
-import { getOwnProfile } from "../../services/api/user"
-import { User } from "../../constants/types/user"
+import { useAuth } from "../../context/AuthContext"
 
 export const ConfigurationPage = () => {
-    const isLoggedIn = useIsAuth()
+    const { isLoggedIn, userInfo, isLoading } = useAuth()
     const navigate = useNavigate()
 
-    const [loggedUser, setLoggedUser] = useState<User>()
-
     useEffect(() => {
-        if(isLoggedIn === false) {
+        if(!isLoading && !isLoggedIn) {
             navigate("/login")
         }
-        fetchLoggedUser()
-    }, [isLoggedIn])
-
-    const fetchLoggedUser = async () => {
-        const response = await getOwnProfile()
-        if(response.isSuccessful) {
-            setLoggedUser(response.responseBody.user)
-        }
-    }
+    }, [isLoading])
 
     return (
         <MainLayout>
             {
                 isLoggedIn
                 &&
-                loggedUser
+                userInfo
                 &&
                 <div className="flex flex-col gap-2 m-2">
                     <h1 className="text-2xl text-center">Update your info</h1>
-                    <UpdateUserForm userData={loggedUser} />
+                    <UpdateUserForm userData={userInfo} />
                 </div>
             }
         </MainLayout>

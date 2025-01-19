@@ -8,7 +8,7 @@ import { useAuth } from "../../../context/AuthContext"
 
 export const LoginForm = () => {
     
-    const authContext = useAuth()
+    const { loginUser } = useAuth()
 
     const navigate = useNavigate()
     const [formData, setFormData] = useState<Partial<UserLogin>>({} as UserLogin)
@@ -82,7 +82,7 @@ export const LoginForm = () => {
         e.preventDefault()
         const result = validateForm()
         if(result) {
-            const isSuccessful = await authContext.loginUser(formData as UserLogin)
+            const isSuccessful = await loginUser(formData as UserLogin)
             if(isSuccessful) {
                 navigate("/")
             }

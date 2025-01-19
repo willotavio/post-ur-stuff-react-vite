@@ -36,8 +36,11 @@ export const AuthProvider = ({ children }: TAuthProvider) => {
     useEffect(() => {
         const loggedIn = Cookies.get("isLoggedIn")
         setIsLoggedIn(loggedIn === "true")
-        setIsLoading(false)
-        fetchOwnProfile()
+        const fetchProfile = async () => {
+            await fetchOwnProfile()
+            setIsLoading(false)
+        }
+        fetchProfile()
     }, [isLoggedIn])
 
     const loginUser = async (user: UserLogin) => {

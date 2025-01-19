@@ -1,20 +1,20 @@
 import { useNavigate, useParams } from "react-router-dom"
-import { useIsAuth } from "../../hooks/useIsAuth"
 import { useEffect, useState } from "react"
 import { MainLayout } from "../../layouts/MainLayout"
 import { User } from "../../constants/types/user"
-import { getOwnProfile, getProfileByUsername } from "../../services/api/user"
+import { getProfileByUsername } from "../../services/api/user"
 import { getOwnPosts, getPublicPostsByUserId } from "../../services/api/post"
 import { Post } from "../../constants/types/post"
 import { PostList } from "../../components/PostList"
 import { UserCard } from "../../components/UserCard"
 import { AddPostForm } from "../../components/AddPostForm"
+import { useAuth } from "../../context/AuthContext"
 
 export const ProfilePage = () => {
     const { username } = useParams()
 
     const navigate = useNavigate()
-    const isLoggedIn = useIsAuth()
+    const { isLoggedIn, userInfo, isLoading } = useAuth()
 
     const [isOwnProfile, setIsOwnProfile] = useState(false)
 
@@ -22,42 +22,36 @@ export const ProfilePage = () => {
     const [posts, setPosts] = useState<Post[]>([])
 
     useEffect(() => {
-        if(isLoggedIn === false) {
+        if(!isLoading && !isLoggedIn) {
             navigate("/login")
+            return
         }
+
         const fetchData = async () => {
-            let loggedUser: User = await fetchLoggedUser()
-            let newUsername = username ?? loggedUser.username
-            let user: User | null = await fetchUser(newUsername)
-            if(user) {
-                setUser(user)
-                let posts: Post[]
-                if(loggedUser.id === user?.id) {
-                    setIsOwnProfile(true)
-                    posts = await fetchOwnPosts()
+            if((!isLoading && isLoggedIn && userInfo) && (!username || username === userInfo.username)) {
+                setIsOwnProfile(true)
+                setUser(userInfo)
+                const ownPosts = await fetchOwnPosts()
+                setPosts(ownPosts)
+            }
+            else if(username){
+                const fetchedUser = await fetchUser(username)
+                if(fetchedUser) {
+                    setUser(fetchedUser)
+                    const publicPosts = await fetchPublicPosts(fetchedUser.id)
+                    setPosts(publicPosts)
                 }
-                else {
-                    posts = await fetchPublicPosts(user?.id)
-                }
-                setPosts(posts)
             }
         }
+        
         fetchData()
-    }, [isLoggedIn])
-
-    const fetchLoggedUser = async () => {
-        let response = await getOwnProfile()
-        if(response.isSuccessful) {
-            return response.responseBody.user
-        }
-    }
+    }, [isLoading])
 
     const fetchUser = async (username: string) => {
         let response = await getProfileByUsername(username)
         if(response.isSuccessful) {
-            return response.responseBody.user
+            return response.responseBody.user as User
         }
-        return null
     }
 
     const fetchOwnPosts = async () => {
@@ -67,7 +61,7 @@ export const ProfilePage = () => {
             newPostList.sort((a, b) => {
                 return Date.parse(b.createdAt.toString()) - Date.parse(a.createdAt.toString())
             })
-            return newPostList as Post[]
+            return newPostList
         }
         return []
     }
@@ -79,7 +73,7 @@ export const ProfilePage = () => {
             newPostList.sort((a, b) => {
                 return Date.parse(b.createdAt.toString()) - Date.parse(a.createdAt.toString())
             })
-            return newPostList as Post[]
+            return newPostList
         }
         return []
     }
