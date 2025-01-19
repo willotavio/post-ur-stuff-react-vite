@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react"
-import { login } from "../../../services/api/user"
 import { UserLogin } from "../../../constants/types/user"
 import { InputField } from "../../../components/ui/InputField"
 import { Link, useNavigate } from "react-router-dom"
 import { ToastMessage } from "../../../components/ui/ToastMessage"
 import { ArrowRight, XCircle } from "@phosphor-icons/react"
+import { useAuth } from "../../../context/AuthContext"
 
 export const LoginForm = () => {
     
+    const authContext = useAuth()
+
     const navigate = useNavigate()
     const [formData, setFormData] = useState<Partial<UserLogin>>({} as UserLogin)
     const [formErrors, setFormErrors] = useState<Record<string, string | null>>({})
@@ -80,8 +82,8 @@ export const LoginForm = () => {
         e.preventDefault()
         const result = validateForm()
         if(result) {
-            const response = await login(formData as UserLogin)
-            if(response.isSuccessful) {
+            const isSuccessful = await authContext.loginUser(formData as UserLogin)
+            if(isSuccessful) {
                 navigate("/")
             }
             else {
