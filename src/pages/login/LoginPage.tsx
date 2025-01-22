@@ -1,20 +1,21 @@
 import { useEffect } from "react"
-import { useIsAuth } from "../../hooks/useIsAuth"
 import { LoginForm } from "./components/LoginForm"
 import { useNavigate } from "react-router-dom"
 import { MainLayout } from "../../layouts/MainLayout"
+import { useAuth } from "../../context/AuthContext"
 
 export const LoginPage = () => {
     const navigate = useNavigate()
-    const isLoggedIn = useIsAuth()
+    const { isLoggedIn, isLoading } = useAuth()
     useEffect(() => {
-        if(isLoggedIn) {
+        if(!isLoading && isLoggedIn) {
             navigate("/")
         }
     })
 
     return(
-        !isLoggedIn
+        !isLoading 
+        && !isLoggedIn
         &&
         <MainLayout>
             <div className="flex min-h-screen">

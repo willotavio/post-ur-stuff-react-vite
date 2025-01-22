@@ -1,13 +1,13 @@
-import { useIsAuth } from "../hooks/useIsAuth"
 import { useEffect, useState } from "react"
 import { AddPostForm } from "../components/AddPostForm"
 import { getAllPublicPosts } from "../services/api/post"
 import { Post } from "../constants/types/post"
 import { PostList } from "../components/PostList"
 import { MainLayout } from "../layouts/MainLayout"
+import { useAuth } from "../context/AuthContext"
 
 export const Home = () => {
-    const isLoggedIn = useIsAuth()
+    const { isLoggedIn } = useAuth()
 
     const [postList, setPostList] = useState<Post[]>([])
     useEffect(() => {
