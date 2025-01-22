@@ -151,25 +151,23 @@ export const UpdateUserForm = ({ userData }: TProps) => {
                 serverMessage ?? ""
             }
             <form className="flex flex-col gap-y-4" onSubmit={handleSubmit}>
-                <div className="grid grid-cols-2 gap-4">
-                    <InputField 
-                        type="text"
-                        id="username"
-                        label="Username"
-                        name="username"
-                        defaultValue={userData.username}
-                        error={formErrors.usernameError}
-                        callback={(value) => {
-                            const result = validateUsername(value)
-                            setFormData({ ...formData, username: value })
-                            var usernameError = ""
-                            if(result != true) {
-                                usernameError = result
-                            }
-                            setFormErrors({ ...formErrors, usernameError })
-                        }}
-                    />
-                </div>
+                <InputField 
+                    type="text"
+                    id="username"
+                    label="Username"
+                    name="username"
+                    defaultValue={userData.username}
+                    error={formErrors.usernameError}
+                    callback={(value) => {
+                        const result = validateUsername(value)
+                        setFormData({ ...formData, username: value })
+                        var usernameError = ""
+                        if(result != true) {
+                            usernameError = result
+                        }
+                        setFormErrors({ ...formErrors, usernameError })
+                    }}
+                />
                 <InputField 
                     type="text"
                     id="displayName"

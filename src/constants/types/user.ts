@@ -36,3 +36,9 @@ export type UserUpdate = {
     profileCover?: string,
     description?: string
 }
+
+export type PasswordUpdate = {
+    newPassword?: string,
+    newPasswordConfirmation?: string,
+    currentPassword?: string
+}
