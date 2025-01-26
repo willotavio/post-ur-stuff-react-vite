@@ -1,5 +1,5 @@
 import { PostVisibility } from "../../constants/enums"
-import { PostAdd } from "../../constants/types/post"
+import { PostAdd, PostUpdate } from "../../constants/types/post"
 import { apiFetch } from "./apiFetch"
 
 export const getAllPublicPosts = () => {
@@ -35,6 +35,13 @@ export const getPublicPostsByUserId = (userId: string) => {
 export const addPost = (post: PostAdd) => {
     return apiFetch("/post", {
         method: "POST",
+        body: JSON.stringify(post)
+    })
+}
+
+export const updatePost = (id: string, post: PostUpdate) => {
+    return apiFetch(`/post/${id}`, {
+        method: "PATCH",
         body: JSON.stringify(post)
     })
 }
