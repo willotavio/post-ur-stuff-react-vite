@@ -1,9 +1,10 @@
-import { Globe, Lock } from "@phosphor-icons/react"
+import { Check, Globe, Lock, X } from "@phosphor-icons/react"
 import { Post, PostUpdate } from "../constants/types/post"
-import React, { useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { PostVisibility } from "../constants/enums"
 import { TextArea } from "./ui/TextArea"
 import { updatePost } from "../services/api/post"
+import { ToastMessage } from "./ui/ToastMessage"
 
 type TProps = {
     post: Post,
@@ -19,6 +20,16 @@ export const UpdatePostForm = ({ post, callback }: TProps) => {
     const [updatedPost, setUpdatedPost] = useState<PostUpdate>({ ...post, visibility: parseInt(PostVisibility[post.visibility]) })
     const [formErrors, setFormErrors] = useState<TFormErrors>({})
     const contentRef = useRef(null)
+    const [toastMessage, setToastMessage] = useState<React.ReactNode | null>(null)
+
+    useEffect(() => {
+        if(toastMessage) {
+            const timer = setTimeout(() => {
+                setToastMessage(null)
+            }, 3000)
+            return() => clearTimeout(timer)
+        }
+    }, [toastMessage])
 
     const validateContent = (value: string) => {
         var contentError
@@ -46,12 +57,19 @@ export const UpdatePostForm = ({ post, callback }: TProps) => {
                 if(callback) {
                     callback(response.responseBody.post)
                 }
-            } 
+                setToastMessage(<ToastMessage backgroundColor="success" message="Updated successfully" icon={Check} />)
+            }
+            else {
+                setToastMessage(<ToastMessage backgroundColor="error" message={response.responseBody.message} icon={X} />)
+            }
         }
     }
 
     return (
         <div className="flex flex-col">
+            {
+                toastMessage ?? ""
+            }
             <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
                 <TextArea 
                     placeholder=""

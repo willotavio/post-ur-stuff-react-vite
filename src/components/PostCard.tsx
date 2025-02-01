@@ -39,7 +39,6 @@ export const PostCard = ({ post }: TProps) => {
                 <Modal setIsOpen={setIsOpen}>
                     <UpdatePostForm post={currentPost} callback={(post) => {
                         setCurrentPost(post)
-                        setIsOpen(false)
                     }} />
                 </Modal>
             }

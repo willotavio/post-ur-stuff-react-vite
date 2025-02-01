@@ -133,7 +133,7 @@ export const LoginForm = () => {
                         setFormErrors({ ...formErrors, passwordError })
                     }}
                 />
-                <button className="button-default flex sm:w-1/3 w-2/3  items-center justify-between">Submit<ArrowRight size={24} /></button>
+                <button className="button-default flex sm:w-1/3 w-2/3 items-center justify-between">Submit<ArrowRight size={24} /></button>
                 <Link className='text-xs text-neutral-500 hover:opacity-80' to={"/register"}>Don't have an account yet?</Link>
             </form>
         </div>
