@@ -23,7 +23,7 @@ export const PostCard = ({ post }: TProps) => {
                     <Link to={`/profile/${currentPost.user.username}`}> @{currentPost.user.username}</Link> 
                 </div>
                 <div className="text-xs flex justify-between gap-2">
-                    <p className="sm:block hidden">{currentPost.createdAt.toString().split("T")[0]}</p>
+                    <p className="sm:block hidden" title={currentPost.editedAt ? `Edited at ${currentPost.editedAt?.toString().split("T")[0]}` : ""}>{currentPost.createdAt.toString().split("T")[0]}</p>
                     {
                         userInfo && currentPost.user.id === userInfo.id
                         &&
