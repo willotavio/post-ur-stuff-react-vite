@@ -1,19 +1,22 @@
 import { Link } from "react-router-dom"
 import { Post } from "../constants/types/post"
 import { useAuth } from "../context/AuthContext"
-import { Pencil } from "@phosphor-icons/react"
+import { Pencil, X } from "@phosphor-icons/react"
 import { useState } from "react"
 import { Modal } from "./ui/Modal"
 import { UpdatePostForm } from "./UpdatePostForm"
+import { deletePost } from "../services/api/post"
 
 type TProps = {
     post: Post,
+    callback?: (id: string) => void
 }
 
-export const PostCard = ({ post }: TProps) => {
+export const PostCard = ({ post, callback }: TProps) => {
     const { userInfo } = useAuth()
     const [currentPost, setCurrentPost] = useState(post)
-    const [isOpen, setIsOpen] = useState(false)
+    const [isEditOpen, setIsEditOpen] = useState(false)
+    const [isDeleteOpen, setIsDeleteOpen] = useState(false)
 
     return (
         <div className="flex flex-col gap-2 border-solid border-2 border-gray-400 rounded-lg p-2 break-all">
@@ -27,19 +30,35 @@ export const PostCard = ({ post }: TProps) => {
                     {
                         userInfo && currentPost.user.id === userInfo.id
                         &&
-                        <Pencil onClick={() => setIsOpen(!isOpen)} />
+                        <>
+                            <Pencil onClick={() => setIsEditOpen(!isEditOpen)} />
+                            <X onClick={() => {setIsDeleteOpen(!isDeleteOpen)}} />
+                        </>
                     }
                 </div>
             </div>
             <p className="text-sm">{ currentPost.content }</p>
             
             {
-                isOpen
+                isEditOpen
                 &&
-                <Modal setIsOpen={setIsOpen}>
+                <Modal setIsOpen={setIsEditOpen}>
                     <UpdatePostForm post={currentPost} callback={(post) => {
                         setCurrentPost(post)
                     }} />
+                </Modal>
+            }
+            {
+                isDeleteOpen
+                &&
+                <Modal setIsOpen={setIsDeleteOpen}>
+                    <button className="button-default !bg-red-500" onClick={async () => {
+                        await deletePost(currentPost.id)
+                        setIsDeleteOpen(false)
+                        if(callback) {
+                            callback(currentPost.id)
+                        }
+                    }}>Delete</button>
                 </Modal>
             }
         </div>
