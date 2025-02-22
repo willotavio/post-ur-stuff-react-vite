@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom"
 import { Post } from "../constants/types/post"
 import { useAuth } from "../context/AuthContext"
-import { Pencil, X } from "@phosphor-icons/react"
+import { Pencil, Trash, X } from "@phosphor-icons/react"
 import { useState } from "react"
 import { Modal } from "./ui/Modal"
 import { UpdatePostForm } from "./UpdatePostForm"
 import { deletePost } from "../services/api/post"
+import { ToastContainer, toast } from "react-toastify"
 
 type TProps = {
     post: Post,
@@ -17,6 +18,8 @@ export const PostCard = ({ post, callback }: TProps) => {
     const [currentPost, setCurrentPost] = useState(post)
     const [isEditOpen, setIsEditOpen] = useState(false)
     const [isDeleteOpen, setIsDeleteOpen] = useState(false)
+
+    let notify = () => toast("")
 
     return (
         <div className="flex flex-col gap-2 border-solid border-2 border-gray-400 rounded-lg p-2 break-all">
@@ -32,7 +35,7 @@ export const PostCard = ({ post, callback }: TProps) => {
                         &&
                         <>
                             <Pencil onClick={() => setIsEditOpen(!isEditOpen)} />
-                            <X onClick={() => {setIsDeleteOpen(!isDeleteOpen)}} />
+                            <X onClick={() => setIsDeleteOpen(!isDeleteOpen)} />
                         </>
                     }
                 </div>
@@ -54,6 +57,8 @@ export const PostCard = ({ post, callback }: TProps) => {
                 <Modal setIsOpen={setIsDeleteOpen}>
                     <button className="button-default !bg-red-500" onClick={async () => {
                         await deletePost(currentPost.id)
+                        notify = () => toast("Deleted successfully", { icon: <Trash />, type: "success"})
+                        notify()
                         setIsDeleteOpen(false)
                         if(callback) {
                             callback(currentPost.id)

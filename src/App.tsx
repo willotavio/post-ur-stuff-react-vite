@@ -5,12 +5,14 @@ import { RegisterPage } from './pages/register/RegisterPage'
 import { ProfilePage } from './pages/profile/ProfilePage'
 import { ConfigurationPage } from './pages/configuration/ConfigurationPage'
 import { AuthProvider } from './context/AuthContext'
+import { ToastContainer } from 'react-toastify'
 
 function App() {
 
   return (
     <BrowserRouter>
       <AuthProvider>
+        <ToastContainer draggable={true} closeButton={true} />
         <Routes>
           <Route path='/' Component={ () => <Home /> } />
           <Route path='/register' Component={ () => <RegisterPage /> } />
