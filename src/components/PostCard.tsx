@@ -6,7 +6,7 @@ import { useState } from "react"
 import { Modal } from "./ui/Modal"
 import { UpdatePostForm } from "./UpdatePostForm"
 import { deletePost } from "../services/api/post"
-import { ToastContainer, toast } from "react-toastify"
+import { toast } from "react-toastify"
 
 type TProps = {
     post: Post,

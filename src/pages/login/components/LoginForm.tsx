@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { UserLogin } from "../../../constants/types/user"
 import { InputField } from "../../../components/ui/InputField"
 import { Link, useNavigate } from "react-router-dom"
-import { ToastMessage } from "../../../components/ui/ToastMessage"
-import { ArrowRight, XCircle } from "@phosphor-icons/react"
+import { ArrowRight, X } from "@phosphor-icons/react"
 import { useAuth } from "../../../context/AuthContext"
+import { toast } from "react-toastify"
 
 export const LoginForm = () => {
     
@@ -13,16 +13,8 @@ export const LoginForm = () => {
     const navigate = useNavigate()
     const [formData, setFormData] = useState<Partial<UserLogin>>({} as UserLogin)
     const [formErrors, setFormErrors] = useState<Record<string, string | null>>({})
-    const [serverError, setServerError] = useState("")
 
-    useEffect(() => {
-        if(serverError) {
-            const timer = setTimeout(() => {
-                setServerError("")
-            }, 5000)
-            return () => clearTimeout(timer)
-        }
-    }, [serverError])
+    let notify = () => toast("")
 
     const validateUsername = (value: string) => {
         if(value.length > 4 && value.length < 16) {
@@ -87,7 +79,8 @@ export const LoginForm = () => {
                 navigate("/")
             }
             else {
-                setServerError("Invalid credentials")
+                notify = () => toast("Invalid credentials", {type: "error", icon: X})
+                notify()
             }
         }
     }
@@ -95,11 +88,6 @@ export const LoginForm = () => {
     return(
         <div className="flex flex-col gap-8 w-2/3 sm:w-[24rem] m-auto p-6 rounded-lg shadow-lg">
             <h1 className="text-4xl">Login</h1>
-            {
-                serverError
-                &&
-                <ToastMessage message={serverError} icon={XCircle} backgroundColor="error" />
-            }
             <form className="flex flex-col gap-y-4" onSubmit={handleSubmit}>
                 <InputField 
                     type="text"

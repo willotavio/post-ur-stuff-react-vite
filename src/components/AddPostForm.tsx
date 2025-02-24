@@ -4,7 +4,7 @@ import { PostVisibility } from "../constants/enums"
 import { Globe, Lock, Check, X } from "@phosphor-icons/react"
 import { addPost } from "../services/api/post"
 import { TextArea } from "./ui/TextArea"
-import { toast, ToastContainer } from "react-toastify"
+import { toast } from "react-toastify"
 
 type TProps = {
     callback?: () => void
