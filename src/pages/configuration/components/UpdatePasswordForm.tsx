@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useRef, useState } from "react"
 import { InputField } from "../../../components/ui/InputField"
 import { ArrowRight, Check, X } from "@phosphor-icons/react"
 import { updatePassword } from "../../../services/api/user"
 import { PasswordUpdate } from "../../../constants/types/user"
-import { ToastMessage } from "../../../components/ui/ToastMessage"
+import { toast } from "react-toastify"
 
 export const UpdatePasswordForm = () => {
 
@@ -16,18 +16,9 @@ export const UpdatePasswordForm = () => {
     const [formData, setFormData] = useState<Partial<PasswordUpdate>>()
     const [formErrors, setFormErrors] = useState<FormErrors>({})
 
-    const [serverMessage, setServerMessage] = useState<React.ReactNode | null>(null)
+    let notify = () => toast("")
 
     const formRef = useRef<HTMLFormElement>(null)
-
-    useEffect(() => {
-        if(serverMessage) {
-            let timer = setTimeout(() => {
-                setServerMessage(null)
-            }, 3000)
-            return () => clearTimeout(timer)
-        }
-    }, [serverMessage])
 
     const validateNewPassword = (value: string) => {
         var newPasswordError
@@ -94,25 +85,20 @@ export const UpdatePasswordForm = () => {
         if(result) {
             const response = await updatePassword(formData as PasswordUpdate)
             if(response.isSuccessful) {
-                setServerMessage(
-                    <ToastMessage message="Password updated" backgroundColor="success" icon={Check} ></ToastMessage>
-                )
+                notify = () => toast("Password updated", {type: "success", icon: Check})
+                notify()
                 formRef.current?.reset()
                 setFormData({})
             }
             else {    
-                setServerMessage(
-                    <ToastMessage message={response.responseBody.message} backgroundColor="error" icon={X} ></ToastMessage>
-                )
+                notify = () => toast(response.responseBody.message, {type: "error", icon: X})
+                notify()
             }
         }
     }
 
     return (
         <div className="flex flex-col gap-8 w-2/3 sm:w-[24rem] m-auto p-6 rounded-lg shadow-lg">
-            {
-                serverMessage ?? ""
-            }
             <form ref={formRef} className="flex flex-col gap-4" onSubmit={handleSubmit}>
                 <InputField 
                     type="password"

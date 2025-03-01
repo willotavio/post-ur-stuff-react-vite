@@ -20,5 +20,5 @@ export type PostAdd = {
 export type PostUpdate = {
     content?: string,
     images?: string[]
-    visibility?: PostVisibility
+    visibility?: PostVisibility | number
 }

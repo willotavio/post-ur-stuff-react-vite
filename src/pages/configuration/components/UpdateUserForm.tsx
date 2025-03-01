@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import { User, UserUpdate } from "../../../constants/types/user"
-import { ToastMessage } from "../../../components/ui/ToastMessage"
 import { InputField } from "../../../components/ui/InputField"
 import { ArrowRight, Check, XCircle } from "@phosphor-icons/react"
 import { updateProfile } from "../../../services/api/user"
 import { useAuth } from "../../../context/AuthContext"
+import { toast } from "react-toastify"
 
 type TProps = {
     userData: User
@@ -14,25 +14,8 @@ export const UpdateUserForm = ({ userData }: TProps) => {
     const { fetchOwnProfile } = useAuth()
     const [formData, setFormData] = useState<UserUpdate>({})
     const [formErrors, setFormErrors] = useState<Record<string, string | null>>({})
-    const [serverMessage, setServerMessage] = useState<React.ReactNode | null>(null)
 
-    useEffect(() => {
-        setFormData({
-            username: userData.username,
-            displayName: userData.displayName,
-            description: userData.description,
-            birthDate: userData.birthDate
-        })
-    }, [])
-
-    useEffect(() => {
-        if(serverMessage) {
-            const timer = setTimeout(() => {
-                setServerMessage(null)
-            }, 5000)
-            return () => clearTimeout(timer)
-        }
-    }, [serverMessage])
+    let notify = () => toast("")
 
     const validateUsername = (value: string) => {
         if(value.length >= 4
@@ -99,7 +82,7 @@ export const UpdateUserForm = ({ userData }: TProps) => {
         if(usernameValidation !== true) {
             newErrors.usernameError = usernameValidation
         }
-        var displayNameValidation = validateUsername(formData.displayName ?? "")
+        var displayNameValidation = validateDisplayName(formData.displayName ?? "")
         if(displayNameValidation !== true) {
             newErrors.displayNameError = displayNameValidation
         }
@@ -128,10 +111,12 @@ export const UpdateUserForm = ({ userData }: TProps) => {
                 const response = await updateProfile(formData)
                 if(response.isSuccessful) {
                     await fetchOwnProfile()
-                    setServerMessage(<ToastMessage message={"Profile updated"} icon={Check} backgroundColor="success" />)
+                    notify = () => toast("Profile updated", {type: "success", icon: Check})
+                    notify()
                 }
                 else {
-                    setServerMessage(<ToastMessage message={"Bad request"} icon={XCircle} backgroundColor="error" />)
+                    notify = () => toast("Bad request", {type: "error", icon: XCircle})
+                    notify()
                     setFormErrors({ ...formErrors, 
                         usernameError: response.responseBody.username,
                         displayNameError: response.responseBody.displayName,
@@ -147,9 +132,6 @@ export const UpdateUserForm = ({ userData }: TProps) => {
     
     return (
         <div className="flex flex-col gap-8 w-2/3 sm:w-[24rem] m-auto p-6 rounded-lg shadow-lg">
-            {
-                serverMessage ?? ""
-            }
             <form className="flex flex-col gap-y-4" onSubmit={handleSubmit}>
                 <InputField 
                     type="text"

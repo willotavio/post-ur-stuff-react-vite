@@ -97,7 +97,7 @@ export const ProfilePage = () => {
                     </div>
                 }
                 <div className="w-1/2 m-auto">
-                    <PostList postList={posts} />
+                    <PostList postList={posts} setPostsList={setPosts}/>
                 </div>
             </div> 
             : <p className="text-center">User not found</p>

@@ -39,7 +39,7 @@ export const Home = () => {
                         <AddPostForm callback={() => {
                             fetchPosts()
                         }} />
-                        <PostList postList={postList} />
+                        <PostList postList={postList} setPostsList={setPostList} />
                     </>
                         
                     : 
