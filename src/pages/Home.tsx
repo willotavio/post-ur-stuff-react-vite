@@ -16,19 +16,22 @@ export const Home = () => {
         }
     }, [isLoggedIn])
 
+    const [postPage, setPostPage] = useState(0)
+
     const fetchPosts = () => {
         async function getPosts() {
-            const response = await getAllPublicPosts();
+            const response = await getAllPublicPosts(postPage.toString());
             if(response.isSuccessful) {
                 var newPostList: Post[] = response.responseBody.posts
-                newPostList.sort((a, b) => {
-                    return Date.parse(b.createdAt.toString()) - Date.parse(a.createdAt.toString())
-                })
-                setPostList(newPostList)
+                setPostList([...postList, ...newPostList])
             }
         }
         getPosts()
     }
+
+    useEffect(() => {
+        fetchPosts()
+    }, [postPage])
 
     return(
         <MainLayout>
@@ -40,6 +43,9 @@ export const Home = () => {
                             fetchPosts()
                         }} />
                         <PostList postList={postList} setPostsList={setPostList} />
+                        <button onClick={() => {
+                            setPostPage(prevPage => prevPage + 1)
+                        }}>Load more</button>
                     </>
                         
                     : 
