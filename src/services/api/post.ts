@@ -2,32 +2,32 @@ import { PostVisibility } from "../../constants/enums"
 import { PostAdd, PostUpdate } from "../../constants/types/post"
 import { apiFetch } from "./apiFetch"
 
-export const getAllPublicPosts = () => {
-    return apiFetch("/post", {
+export const getAllPublicPosts = (page: string="", size: string="", sortDirection: string="") => {
+    return apiFetch(`/post?page=${page}&size=${size}&sortDirection=${sortDirection}`, {
         method: "GET"
     })
 }
 
-export const getPostById = (id: string) => {
-    return apiFetch(`/post/${id}`, {
+export const getPostById = (id: string, page: string="", size: string="", sortDirection: string="") => {
+    return apiFetch(`/post/${id}?page=${page}&size=${size}&sortDirection=${sortDirection}`, {
         method: "GET"
     })
 }
 
-export const getOwnPosts = () => {
-    return apiFetch("/post/me", {
+export const getOwnPosts = (page: string="", size: string="", sortDirection: string="") => {
+    return apiFetch(`/post/me?page=${page}&size=${size}&sortDirection=${sortDirection}`, {
         method: "GET"
     })
 }
 
-export const getOwnPostsWithVisibility = (visibility: PostVisibility) => {
-    return apiFetch(`/post/me/${PostVisibility[visibility.valueOf()]}`, {
+export const getOwnPostsWithVisibility = (visibility: PostVisibility, page: string="", size: string="", sortDirection: string="") => {
+    return apiFetch(`/post/me/${PostVisibility[visibility.valueOf()]}?page=${page}&size=${size}&sortDirection=${sortDirection}`, {
         method: "GET"
     })
 }
 
-export const getPublicPostsByUserId = (userId: string) => {
-    return apiFetch(`/post/user/${userId}`, {
+export const getPublicPostsByUserId = (userId: string, page: string="", size: string="", sortDirection: string="") => {
+    return apiFetch(`/post/user/${userId}?page=${page}&size=${size}&sortDirection=${sortDirection}`, {
         method: "GET"
     })
 }
