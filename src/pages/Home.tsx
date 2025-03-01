@@ -23,7 +23,7 @@ export const Home = () => {
             const response = await getAllPublicPosts(postPage.toString());
             if(response.isSuccessful) {
                 var newPostList: Post[] = response.responseBody.posts
-                setPostList([...postList, ...newPostList])
+                setPostList([...postList, ...newPostList.filter(post => !postList.find(p => p.id == post.id))])
             }
         }
         getPosts()
@@ -39,8 +39,8 @@ export const Home = () => {
                 {
                     isLoggedIn
                     ? <>
-                        <AddPostForm callback={() => {
-                            fetchPosts()
+                        <AddPostForm callback={(post: Post) => {
+                            setPostList([post, ...postList])
                         }} />
                         <PostList postList={postList} setPostsList={setPostList} />
                         <button onClick={() => {

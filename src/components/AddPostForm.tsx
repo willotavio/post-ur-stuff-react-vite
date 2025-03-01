@@ -1,5 +1,5 @@
 import { useRef, useState } from "react"
-import { PostAdd } from "../constants/types/post"
+import { Post, PostAdd } from "../constants/types/post"
 import { PostVisibility } from "../constants/enums"
 import { Globe, Lock, Check, X } from "@phosphor-icons/react"
 import { addPost } from "../services/api/post"
@@ -7,7 +7,7 @@ import { TextArea } from "./ui/TextArea"
 import { toast } from "react-toastify"
 
 type TProps = {
-    callback?: () => void
+    callback?: (post: Post) => void
 }
 
 export const AddPostForm = ({ callback }: TProps) => {
@@ -85,7 +85,7 @@ export const AddPostForm = ({ callback }: TProps) => {
                 setFormData({ ...formData, content: "" })
                 formRef.current?.reset()
                 if(callback) {
-                    callback()
+                    callback(response.responseBody.post)
                 }
             }
             else {
