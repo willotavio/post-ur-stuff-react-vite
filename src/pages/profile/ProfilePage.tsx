@@ -24,7 +24,23 @@ export const ProfilePage = () => {
     const [postPage, setPostPage] = useState(0)
 
     useEffect(() => {
-        fetchData()
+        const refetchPosts = async () => {
+            if((!isLoading && isLoggedIn && userInfo) && (!username || username === userInfo.username)) {
+                const ownPosts = await fetchOwnPosts()
+                setPosts([...posts, ...ownPosts.filter((post) => !posts.find(p => p.id === post.id))])
+            }
+            else if(username && userInfo){
+                const publicPosts = await fetchPublicPosts(userInfo.id)
+                setPosts([...posts, ...publicPosts.filter((post) => !posts.find(p => p.id === post.id))])
+            }
+        }
+        if(postPage === 0) {
+            fetchData()
+            return
+        }
+        else {
+            refetchPosts()
+        }
     }, [postPage])
 
     const fetchData = async () => {
@@ -32,14 +48,14 @@ export const ProfilePage = () => {
             setIsOwnProfile(true)
             setUser(userInfo)
             const ownPosts = await fetchOwnPosts()
-            setPosts([...posts, ...ownPosts.filter((post) => !posts.find(p => p.id === post.id))])
+            setPosts(ownPosts)
         }
         else if(username){
             const fetchedUser = await fetchUser(username)
             if(fetchedUser) {
                 setUser(fetchedUser)
                 const publicPosts = await fetchPublicPosts(fetchedUser.id)
-                setPosts([...posts, ...publicPosts.filter((post) => !posts.find(p => p.id === post.id))])
+                setPosts(publicPosts)
             }
         }
     }
@@ -49,7 +65,6 @@ export const ProfilePage = () => {
             navigate("/login")
             return
         }
-        
         fetchData()
     }, [isLoading])
 
@@ -97,7 +112,7 @@ export const ProfilePage = () => {
                     </div>
                 }
                 <div className="w-1/2 m-auto">
-                    <PostList postList={posts} setPostsList={setPosts}/>
+                    <PostList postList={posts} setPostPage={setPostPage}/>
                     <button onClick={() => {
                         setPostPage(prevPost => prevPost + 1)
                     }}>

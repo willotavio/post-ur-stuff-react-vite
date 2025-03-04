@@ -8,30 +8,40 @@ import { useAuth } from "../context/AuthContext"
 
 export const Home = () => {
     const { isLoggedIn } = useAuth()
+    const [postPage, setPostPage] = useState(0)
 
     const [postList, setPostList] = useState<Post[]>([])
+    
     useEffect(() => {
         if(isLoggedIn) {
             fetchPosts()
         }
     }, [isLoggedIn])
 
-    const [postPage, setPostPage] = useState(0)
-
-    const fetchPosts = () => {
-        async function getPosts() {
+    useEffect(() => {
+        const refetchPosts = async () => {
             const response = await getAllPublicPosts(postPage.toString());
             if(response.isSuccessful) {
                 var newPostList: Post[] = response.responseBody.posts
                 setPostList([...postList, ...newPostList.filter(post => !postList.find(p => p.id == post.id))])
             }
         }
-        getPosts()
-    }
-
-    useEffect(() => {
-        fetchPosts()
+        if(postPage === 0) {
+            fetchPosts()
+            return 
+        }
+        else {
+            refetchPosts()   
+        }
     }, [postPage])
+
+    const fetchPosts = async () => {
+        const response = await getAllPublicPosts(postPage.toString());
+        if(response.isSuccessful) {
+            var newPostList: Post[] = response.responseBody.posts
+            setPostList(newPostList)
+        }
+    }
 
     return(
         <MainLayout>
@@ -42,7 +52,7 @@ export const Home = () => {
                         <AddPostForm callback={(post: Post) => {
                             setPostList([post, ...postList])
                         }} />
-                        <PostList postList={postList} setPostsList={setPostList} />
+                        <PostList postList={postList} setPostPage={setPostPage} />
                         <button onClick={() => {
                             setPostPage(prevPage => prevPage + 1)
                         }}>Load more</button>
