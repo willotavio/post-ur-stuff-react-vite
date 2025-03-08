@@ -11,29 +11,24 @@ export const Home = () => {
     const [postPage, setPostPage] = useState(0)
 
     const [postList, setPostList] = useState<Post[]>([])
-    
-    useEffect(() => {
-        if(isLoggedIn) {
-            fetchPosts()
-        }
-    }, [isLoggedIn])
 
     useEffect(() => {
-        const refetchPosts = async () => {
-            const response = await getAllPublicPosts(postPage.toString());
-            if(response.isSuccessful) {
-                var newPostList: Post[] = response.responseBody.posts
-                setPostList([...postList, ...newPostList.filter(post => !postList.find(p => p.id == post.id))])
+        if(isLoggedIn) {
+            const refetchPosts = async () => {
+                const response = await getAllPublicPosts(postPage.toString());
+                if(response.isSuccessful) {
+                    var newPostList: Post[] = response.responseBody.posts
+                    setPostList([...postList, ...newPostList.filter(post => !postList.find(p => p.id == post.id))])
+                }
+            }
+            if(postPage === 0) {
+                fetchPosts()
+            }
+            else {
+                refetchPosts()   
             }
         }
-        if(postPage === 0) {
-            fetchPosts()
-            return 
-        }
-        else {
-            refetchPosts()   
-        }
-    }, [postPage])
+    }, [postPage, isLoggedIn])
 
     const fetchPosts = async () => {
         const response = await getAllPublicPosts(postPage.toString());

@@ -23,39 +23,15 @@ export const ProfilePage = () => {
     
     const [postPage, setPostPage] = useState(0)
 
-    useEffect(() => {
-        const refetchPosts = async () => {
-            if((!isLoading && isLoggedIn && userInfo) && (!username || username === userInfo.username)) {
-                const ownPosts = await fetchOwnPosts()
-                setPosts([...posts, ...ownPosts.filter((post) => !posts.find(p => p.id === post.id))])
-            }
-            else if(username && userInfo){
-                const publicPosts = await fetchPublicPosts(userInfo.id)
-                setPosts([...posts, ...publicPosts.filter((post) => !posts.find(p => p.id === post.id))])
-            }
-        }
-        if(postPage === 0) {
-            fetchData()
-            return
-        }
-        else {
-            refetchPosts()
-        }
-    }, [postPage])
-
-    const fetchData = async () => {
+    const fetchUserData = async () => {
         if((!isLoading && isLoggedIn && userInfo) && (!username || username === userInfo.username)) {
             setIsOwnProfile(true)
             setUser(userInfo)
-            const ownPosts = await fetchOwnPosts()
-            setPosts(ownPosts)
         }
         else if(username){
             const fetchedUser = await fetchUser(username)
             if(fetchedUser) {
                 setUser(fetchedUser)
-                const publicPosts = await fetchPublicPosts(fetchedUser.id)
-                setPosts(publicPosts)
             }
         }
     }
@@ -65,8 +41,38 @@ export const ProfilePage = () => {
             navigate("/login")
             return
         }
-        fetchData()
+        fetchUserData()
     }, [isLoading])
+    
+    const fetchPosts = async () => {
+        if((!isLoading && isLoggedIn && userInfo) && (!username || username === userInfo.username)) {
+            const ownPosts = await fetchOwnPosts()
+            setPosts(ownPosts)
+        }
+        else if(username && userInfo){
+            const publicPosts = await fetchPublicPosts(userInfo.id)
+            setPosts(publicPosts)
+        }
+    }
+    const refetchPosts = async () => {
+        if((!isLoading && isLoggedIn && userInfo) && (!username || username === userInfo.username)) {
+            const ownPosts = await fetchOwnPosts()
+            setPosts([...posts, ...ownPosts.filter((post) => !posts.find(p => p.id === post.id))])
+        }
+        else if(username && userInfo){
+            const publicPosts = await fetchPublicPosts(userInfo.id)
+            setPosts([...posts, ...publicPosts.filter((post) => !posts.find(p => p.id === post.id))])
+        }
+    }
+
+    useEffect(() => {
+        if(postPage === 0) {
+            fetchPosts()
+        }
+        else {
+            refetchPosts()
+        }
+    }, [postPage, user])
 
     const fetchUser = async (username: string) => {
         let response = await getProfileByUsername(username)
