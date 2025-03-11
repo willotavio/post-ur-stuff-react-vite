@@ -11,7 +11,7 @@ export const SideBar = () => {
     const { isLoggedIn, logoutUser } = useAuth()
 
     return(
-        <div className="flex flex-col gap-2 border-solid border-r-2 border-gray-300 p-2 h-full">
+        <div className="flex flex-col gap-2 border-solid border-r-2 border-gray-300 p-2 h-full fixed">
             {
                 isLoggedIn
                 ?

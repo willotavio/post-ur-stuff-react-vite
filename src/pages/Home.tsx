@@ -8,26 +8,34 @@ import { useAuth } from "../context/AuthContext"
 
 export const Home = () => {
     const { isLoggedIn } = useAuth()
+    const [postPage, setPostPage] = useState(0)
 
     const [postList, setPostList] = useState<Post[]>([])
+
     useEffect(() => {
         if(isLoggedIn) {
-            fetchPosts()
-        }
-    }, [isLoggedIn])
-
-    const fetchPosts = () => {
-        async function getPosts() {
-            const response = await getAllPublicPosts();
-            if(response.isSuccessful) {
-                var newPostList: Post[] = response.responseBody.posts
-                newPostList.sort((a, b) => {
-                    return Date.parse(b.createdAt.toString()) - Date.parse(a.createdAt.toString())
-                })
-                setPostList(newPostList)
+            const refetchPosts = async () => {
+                const response = await getAllPublicPosts(postPage.toString());
+                if(response.isSuccessful) {
+                    var newPostList: Post[] = response.responseBody.posts
+                    setPostList([...postList, ...newPostList.filter(post => !postList.find(p => p.id == post.id))])
+                }
+            }
+            if(postPage === 0) {
+                fetchPosts()
+            }
+            else {
+                refetchPosts()   
             }
         }
-        getPosts()
+    }, [postPage, isLoggedIn])
+
+    const fetchPosts = async () => {
+        const response = await getAllPublicPosts(postPage.toString());
+        if(response.isSuccessful) {
+            var newPostList: Post[] = response.responseBody.posts
+            setPostList(newPostList)
+        }
     }
 
     return(
@@ -36,10 +44,13 @@ export const Home = () => {
                 {
                     isLoggedIn
                     ? <>
-                        <AddPostForm callback={() => {
-                            fetchPosts()
+                        <AddPostForm callback={(post: Post) => {
+                            setPostList([post, ...postList])
                         }} />
-                        <PostList postList={postList} setPostsList={setPostList} />
+                        <PostList postList={postList} setPostPage={setPostPage} />
+                        <button onClick={() => {
+                            setPostPage(prevPage => prevPage + 1)
+                        }}>Load more</button>
                     </>
                         
                     : 

@@ -55,15 +55,18 @@ export const PostCard = ({ post, callback }: TProps) => {
                 isDeleteOpen
                 &&
                 <Modal setIsOpen={setIsDeleteOpen}>
-                    <button className="button-default !bg-red-500" onClick={async () => {
-                        await deletePost(currentPost.id)
-                        notify = () => toast("Deleted successfully", { icon: <Trash />, type: "success"})
-                        notify()
-                        setIsDeleteOpen(false)
-                        if(callback) {
-                            callback(currentPost.id)
-                        }
-                    }}>Delete</button>
+                    <div className="flex flex-col text-center gap-2">
+                        <p>Are you sure you want to delete this post?</p>
+                        <button className="button-default !bg-red-500" onClick={async () => {
+                            await deletePost(currentPost.id)
+                            notify = () => toast("Deleted successfully", { icon: <Trash />, type: "success"})
+                            notify()
+                            setIsDeleteOpen(false)
+                            if(callback) {
+                                callback(currentPost.id)
+                            }
+                        }}>Delete</button>
+                    </div>
                 </Modal>
             }
         </div>

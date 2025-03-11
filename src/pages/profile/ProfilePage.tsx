@@ -20,32 +20,59 @@ export const ProfilePage = () => {
 
     const [user, setUser] = useState<User | null>(null)
     const [posts, setPosts] = useState<Post[]>([])
+    
+    const [postPage, setPostPage] = useState(0)
+
+    const fetchUserData = async () => {
+        if((!isLoading && isLoggedIn && userInfo) && (!username || username === userInfo.username)) {
+            setIsOwnProfile(true)
+            setUser(userInfo)
+        }
+        else if(username){
+            const fetchedUser = await fetchUser(username)
+            if(fetchedUser) {
+                setUser(fetchedUser)
+            }
+        }
+    }
 
     useEffect(() => {
         if(!isLoading && !isLoggedIn) {
             navigate("/login")
             return
         }
-
-        const fetchData = async () => {
-            if((!isLoading && isLoggedIn && userInfo) && (!username || username === userInfo.username)) {
-                setIsOwnProfile(true)
-                setUser(userInfo)
-                const ownPosts = await fetchOwnPosts()
-                setPosts(ownPosts)
-            }
-            else if(username){
-                const fetchedUser = await fetchUser(username)
-                if(fetchedUser) {
-                    setUser(fetchedUser)
-                    const publicPosts = await fetchPublicPosts(fetchedUser.id)
-                    setPosts(publicPosts)
-                }
-            }
-        }
-        
-        fetchData()
+        fetchUserData()
     }, [isLoading])
+    
+    const fetchPosts = async () => {
+        if((!isLoading && isLoggedIn && userInfo) && (!username || username === userInfo.username)) {
+            const ownPosts = await fetchOwnPosts()
+            setPosts(ownPosts)
+        }
+        else if(username && userInfo){
+            const publicPosts = await fetchPublicPosts(userInfo.id)
+            setPosts(publicPosts)
+        }
+    }
+    const refetchPosts = async () => {
+        if((!isLoading && isLoggedIn && userInfo) && (!username || username === userInfo.username)) {
+            const ownPosts = await fetchOwnPosts()
+            setPosts([...posts, ...ownPosts.filter((post) => !posts.find(p => p.id === post.id))])
+        }
+        else if(username && userInfo){
+            const publicPosts = await fetchPublicPosts(userInfo.id)
+            setPosts([...posts, ...publicPosts.filter((post) => !posts.find(p => p.id === post.id))])
+        }
+    }
+
+    useEffect(() => {
+        if(postPage === 0) {
+            fetchPosts()
+        }
+        else {
+            refetchPosts()
+        }
+    }, [postPage, user])
 
     const fetchUser = async (username: string) => {
         let response = await getProfileByUsername(username)
@@ -55,24 +82,18 @@ export const ProfilePage = () => {
     }
 
     const fetchOwnPosts = async () => {
-        let response = await getOwnPosts()
+        let response = await getOwnPosts(postPage.toString())
         if(response.isSuccessful) {
             var newPostList: Post[] = response.responseBody.posts
-            newPostList.sort((a, b) => {
-                return Date.parse(b.createdAt.toString()) - Date.parse(a.createdAt.toString())
-            })
             return newPostList
         }
         return []
     }
 
     const fetchPublicPosts = async (id: string) => {
-        let response = await getPublicPostsByUserId(id)
+        let response = await getPublicPostsByUserId(id, postPage.toString())
         if(response.isSuccessful) {
             var newPostList: Post[] = response.responseBody.posts
-            newPostList.sort((a, b) => {
-                return Date.parse(b.createdAt.toString()) - Date.parse(a.createdAt.toString())
-            })
             return newPostList
         }
         return []
@@ -91,13 +112,18 @@ export const ProfilePage = () => {
                     isOwnProfile
                     &&
                     <div className="w-1/2 m-auto">
-                        <AddPostForm callback={ async () => {
-                            setPosts(await fetchOwnPosts())
+                        <AddPostForm callback={ (post) => {
+                            setPosts([post, ...posts])
                         } } />
                     </div>
                 }
                 <div className="w-1/2 m-auto">
-                    <PostList postList={posts} setPostsList={setPosts}/>
+                    <PostList postList={posts} setPostPage={setPostPage}/>
+                    <button onClick={() => {
+                        setPostPage(prevPost => prevPost + 1)
+                    }}>
+                        Load more
+                    </button>
                 </div>
             </div> 
             : <p className="text-center">User not found</p>
