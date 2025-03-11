@@ -84,7 +84,7 @@ export const AddPostForm = ({ callback }: TProps) => {
                 notify()
                 setFormData({ ...formData, content: "" })
                 formRef.current?.reset()
-                if(callback) {
+                if(callback && formData.visibility === PostVisibility.PUBLIC) {
                     callback(response.responseBody.post)
                 }
             }
