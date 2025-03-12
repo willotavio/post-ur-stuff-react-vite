@@ -6,7 +6,8 @@ import { Link } from "react-router-dom"
 import { useAuth } from "../context/AuthContext"
 
 export const SideBar = () => {
-    const [isOpen, setIsOpen] = useState(false)
+    const [isAddPostOpen, setIsAddPostOpen] = useState(false)
+    const [isLogoutOpen, setIsLogoutOpen] = useState(false)
 
     const { isLoggedIn, logoutUser } = useAuth()
 
@@ -36,14 +37,14 @@ export const SideBar = () => {
                     </Link>
                     <button 
                         className="button-default flex flex-row gap-2 justify-center sm:justify-normal" 
-                        onClick={() => setIsOpen(!isOpen)}>
+                        onClick={() => setIsAddPostOpen(!isAddPostOpen)}>
                         <NotePencil size={24} /> 
                         <p className="hidden sm:block">New post</p>
                     </button>
                     {
-                        isOpen
+                        isAddPostOpen
                         &&
-                        <Modal setIsOpen={ setIsOpen } >
+                        <Modal setIsOpen={ setIsAddPostOpen } >
                             <div>
                                 <AddPostForm callback={() => {}} />
                             </div>
@@ -51,10 +52,20 @@ export const SideBar = () => {
                     }
                     <button 
                         className="button-default !bg-gray-600 hover:!bg-opacity-80 flex flex-row gap-2 justify-center sm:justify-normal" 
-                        onClick={ () => logoutUser() }>
+                        onClick={ () => setIsLogoutOpen(!isLogoutOpen) }>
                         <SignOut size={24} />
                         <p className="hidden sm:block">Logout</p>
                     </button>
+                    {
+                        isLogoutOpen
+                        &&
+                        <Modal setIsOpen={setIsLogoutOpen}>
+                            <div className="flex flex-col gap-4">
+                                <p>Are you sure you want to logout?</p>
+                                <button className="button-default" onClick={() => logoutUser()}>Confirm</button>
+                            </div>
+                        </Modal>
+                    }
                 </>
                 :
                 <>
