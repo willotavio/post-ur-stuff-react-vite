@@ -49,8 +49,8 @@ export const ProfilePage = () => {
             const ownPosts = await fetchOwnPosts()
             setPosts(ownPosts)
         }
-        else if(username && userInfo){
-            const publicPosts = await fetchPublicPosts(userInfo.id)
+        else if(username && user){
+            const publicPosts = await fetchPublicPosts(user.id)
             setPosts(publicPosts)
         }
     }
@@ -59,8 +59,8 @@ export const ProfilePage = () => {
             const ownPosts = await fetchOwnPosts()
             setPosts([...posts, ...ownPosts.filter((post) => !posts.find(p => p.id === post.id))])
         }
-        else if(username && userInfo){
-            const publicPosts = await fetchPublicPosts(userInfo.id)
+        else if(username && user){
+            const publicPosts = await fetchPublicPosts(user.id)
             setPosts([...posts, ...publicPosts.filter((post) => !posts.find(p => p.id === post.id))])
         }
     }

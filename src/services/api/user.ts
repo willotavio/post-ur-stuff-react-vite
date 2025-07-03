@@ -30,7 +30,6 @@ export const login = async (user: UserLogin) => {
             'Accept': 'application/json, text/plain',
             'Content-Type': 'application/json;charset=UTF-8'
         },
-        credentials: "include",
         body: JSON.stringify(user)
     })
 
@@ -81,25 +80,8 @@ export const updateProfile = (user: UserUpdate) => {
 }
 
 export const updatePassword = async (passwordUpdate: PasswordUpdate) => {
-    const response = await fetch(`${import.meta.env.VITE_POSTURSTUFF_API_URI}/user/password`, {
+    return apiFetch(`/user/password`, {
         method: "PATCH",
-        headers: {
-            'Accept': 'application/json, text/plain',
-            'Content-Type': 'application/json;charset=UTF-8'
-        },
-        credentials: "include",
         body: JSON.stringify(passwordUpdate)
     })
-
-    const isSuccessful = response.ok
-    const statusCode = response.status
-
-    let responseBody
-    try {
-        responseBody = await response.json()
-    } catch(error) {
-        responseBody = { error: "Error while trying to process the response body" }
-    }
-
-    return { isSuccessful, statusCode, responseBody }
 }

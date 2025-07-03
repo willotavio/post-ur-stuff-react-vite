@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { User, UserLogin } from "../constants/types/user";
-import { getOwnProfile, login, logout } from "../services/api/user";
-import Cookies from "js-cookie";
+import { getOwnProfile, login } from "../services/api/user";
 
 type TAuthContext = {
     isLoggedIn: boolean,
@@ -34,9 +33,9 @@ export const AuthProvider = ({ children }: TAuthProvider) => {
     const [isLoading, setIsLoading] = useState<boolean>(true)
 
     useEffect(() => {
-        const loggedIn = Cookies.get("isLoggedIn")
-        setIsLoggedIn(loggedIn === "true")
-        if(loggedIn) {
+        const token = localStorage.getItem("token")
+        setIsLoggedIn(token !== null)
+        if(isLoggedIn) {
             const fetchProfile = async () => {
                 await fetchOwnProfile()
                 setIsLoading(false)
@@ -51,6 +50,7 @@ export const AuthProvider = ({ children }: TAuthProvider) => {
     const loginUser = async (user: UserLogin) => {
         const response = await login(user)
         if(response.isSuccessful) {
+            localStorage.setItem("token", response.responseBody.token)
             setIsLoggedIn(true)
             await fetchOwnProfile()
         }
@@ -58,14 +58,10 @@ export const AuthProvider = ({ children }: TAuthProvider) => {
     }
 
     const logoutUser = async () => {
-        const response = await logout()
-        if(response.isSuccessful) {
-            setIsLoggedIn(false)
-            setUserInfo(null)
-            return true
-        }
-        
-        return response.isSuccessful
+        localStorage.removeItem("token")
+        setIsLoggedIn(false)
+        setUserInfo(null)
+        return true
     }
 
     const fetchOwnProfile = async () => {

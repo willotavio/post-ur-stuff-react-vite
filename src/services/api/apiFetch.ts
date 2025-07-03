@@ -7,9 +7,9 @@ export const apiFetch = async (url: string, options: RequestInit) => {
         const defaultOptions: RequestInit = {
             headers: {
                 'Accept': 'application/json, text/plain',
-                'Content-Type': 'application/json;charset=UTF-8'
+                'Content-Type': 'application/json;charset=UTF-8',
+                'Authorization': `Bearer ${localStorage.getItem("token")}`
             },
-            credentials: "include"
         }
     
         options = { ...defaultOptions, ...options }
