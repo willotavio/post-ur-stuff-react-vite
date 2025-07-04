@@ -1,5 +1,3 @@
-import Cookies from "js-cookie"
-
 // wrapper to any api fetch that handles 401 responses
 
 export const apiFetch = async (url: string, options: RequestInit) => {
@@ -26,6 +24,8 @@ export const apiFetch = async (url: string, options: RequestInit) => {
         let responseBody
         try {
             responseBody = await response.json()
+            console.log(isSuccessful)
+            console.log(responseBody)
         } catch(error) {
             responseBody = { error: "Error while trying to process the response body" }
         }
@@ -39,6 +39,6 @@ export const apiFetch = async (url: string, options: RequestInit) => {
 }
 
 const handleUnauthorized = () => {
-    Cookies.remove("isLoggedIn")
+    localStorage.removeItem("token")
     window.location.href = "/login"
 }

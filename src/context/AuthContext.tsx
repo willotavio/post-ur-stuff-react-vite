@@ -34,8 +34,7 @@ export const AuthProvider = ({ children }: TAuthProvider) => {
 
     useEffect(() => {
         const token = localStorage.getItem("token")
-        setIsLoggedIn(token !== null)
-        if(isLoggedIn) {
+        if(token !== null && token !== undefined) {
             const fetchProfile = async () => {
                 await fetchOwnProfile()
                 setIsLoading(false)
@@ -45,7 +44,7 @@ export const AuthProvider = ({ children }: TAuthProvider) => {
         else {
             setIsLoading(false)
         }
-    }, [isLoggedIn])
+    }, [])
 
     const loginUser = async (user: UserLogin) => {
         const response = await login(user)
@@ -67,7 +66,12 @@ export const AuthProvider = ({ children }: TAuthProvider) => {
     const fetchOwnProfile = async () => {
         const response = await getOwnProfile()
         if(response.isSuccessful) {
+            setIsLoggedIn(true)
             setUserInfo(response.responseBody.user)
+        }
+        else {
+            setIsLoggedIn(false)
+            setUserInfo(null)
         }
     }
 
