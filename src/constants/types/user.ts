@@ -30,7 +30,7 @@ export type UserUpdate = {
     username?: string,
     displayName?: string,
     email?: string,
-    birthDate?: Date,
+    birthDate?: string,
     accountVisibility?: UserVisibility,
     profilePicture?: string,
     profileCover?: string,
