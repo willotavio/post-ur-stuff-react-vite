@@ -19,25 +19,29 @@ export const SideBar = () => {
                 <>
                     <Link
                         className="button-default flex flex-row gap-2 justify-center sm:justify-normal"
-                        to={"/"}>
+                        to={"/"}
+                        title="Home">
                         <House size={24} />
                         <p className="hidden sm:block">Home</p>
                     </Link>
                     <Link
                         className="button-default flex flex-row gap-2 justify-center sm:justify-normal"
-                        to={"/profile"}>
+                        to={"/profile"}
+                        title="Profile">
                         <User size={24} />
                         <p className="hidden sm:block">Profile</p>
                     </Link>
                     <Link 
                         className="button-default flex flex-row gap-2 justify-center sm:justify-normal"
-                        to={"/configuration"}>
+                        to={"/configuration"}
+                        title="Configuration">
                         <Gear size={24} />
                         <p className="hidden sm:block">Configuration</p>
                     </Link>
                     <button 
                         className="button-default flex flex-row gap-2 justify-center sm:justify-normal" 
-                        onClick={() => setIsAddPostOpen(!isAddPostOpen)}>
+                        onClick={() => setIsAddPostOpen(!isAddPostOpen)}
+                        title="New post">
                         <NotePencil size={24} /> 
                         <p className="hidden sm:block">New post</p>
                     </button>
@@ -51,8 +55,9 @@ export const SideBar = () => {
                         </Modal>
                     }
                     <button 
-                        className="button-default !bg-gray-600 hover:!bg-opacity-80 flex flex-row gap-2 justify-center sm:justify-normal" 
-                        onClick={ () => setIsLogoutOpen(!isLogoutOpen) }>
+                        className="button-gray flex flex-row gap-2 justify-center sm:justify-normal" 
+                        onClick={ () => setIsLogoutOpen(!isLogoutOpen) }
+                        title="Logout">
                         <SignOut size={24} />
                         <p className="hidden sm:block">Logout</p>
                     </button>

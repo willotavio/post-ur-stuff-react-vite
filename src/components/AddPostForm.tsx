@@ -53,13 +53,6 @@ export const AddPostForm = ({ callback }: TProps) => {
             }
     }
 
-    const handleContentRef = () => {
-        if(contentRef.current !== null) {
-            contentRef.current.style.height = "auto"
-            contentRef.current.style.height = `${contentRef.current.scrollHeight}px`
-        }
-    }
-
     const toggleVisibility = () => {
         var visibility = null
         switch(postVisibility) {

@@ -3,7 +3,7 @@ import { User } from "./user"
 
 export type Post = {
     id: string,
-    content?: string,
+    content: string,
     images?: string[],
     user: User,
     createdAt: Date,

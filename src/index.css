@@ -12,5 +12,11 @@ body {
 }
 
 .button-default {
-    @apply bg-blue-400 text-white rounded-lg p-2 hover:bg-opacity-80 select-none truncate
+    @apply bg-blue-400 text-white rounded-lg p-2 hover:bg-opacity-80 select-none truncate scale-animation
+}
+.button-gray {
+    @apply bg-gray-600 text-white rounded-lg p-2 hover:bg-opacity-80 select-none truncate scale-animation
+}
+.scale-animation {
+    @apply transform transition-transform duration-200 hover:scale-105 cursor-pointer
 }

@@ -1,12 +1,13 @@
 import { Link } from "react-router-dom"
 import { Post } from "../constants/types/post"
 import { useAuth } from "../context/AuthContext"
-import { Pencil, Trash, X } from "@phosphor-icons/react"
+import { Pencil, Trash } from "@phosphor-icons/react"
 import { useState } from "react"
 import { Modal } from "./ui/Modal"
 import { UpdatePostForm } from "./UpdatePostForm"
 import { deletePost } from "../services/api/post"
 import { toast } from "react-toastify"
+import formatDate from "../utils/formatDate"
 
 type TProps = {
     post: Post,
@@ -22,26 +23,21 @@ export const PostCard = ({ post, callback }: TProps) => {
     let notify = () => toast("")
 
     return (
-        <div className="flex flex-col gap-2 border-solid border-2 border-gray-400 rounded-lg p-2 break-all">
-            <div className="text-sm flex justify-between">
-                <div className="text-xs flex justify-between gap-2">
-                    <p className="sm:break-words truncate" title={currentPost.user.displayName}>{currentPost.user.displayName}</p>
-                    <Link to={`/profile/${currentPost.user.username}`}> @{currentPost.user.username}</Link> 
-                </div>
-                <div className="text-xs flex justify-between gap-2">
-                    <p className="sm:block hidden" title={currentPost.editedAt ? `Edited at ${currentPost.editedAt?.toString().split("T")[0]}` : ""}>{currentPost.createdAt.toString().split("T")[0]}</p>
-                    {
-                        userInfo && currentPost.user.id === userInfo.id
-                        &&
-                        <>
-                            <Pencil onClick={() => setIsEditOpen(!isEditOpen)} />
-                            <X onClick={() => setIsDeleteOpen(!isDeleteOpen)} />
-                        </>
-                    }
-                </div>
+        <div className="flex flex-col gap-2">
+            <div className="">
+                <Link to={`/profile/${currentPost.user.username}`} className="text-blue-400 font-bold mr-2" title={`@${currentPost.user.username}`}>{ currentPost?.user.displayName }</Link>
+                <span>{ currentPost.content }</span>
             </div>
-            <p className="text-sm">{ currentPost.content }</p>
-            
+            <div className="flex flex-row text-xs">
+                <span>{ formatDate(currentPost.createdAt) }</span>
+                { 
+                    userInfo?.id === post.user.id && 
+                    <div className="flex flex-row ml-auto gap-2">
+                        <Pencil className="scale-animation" onClick={() => setIsEditOpen(!isEditOpen)} size={16}/>
+                        <Trash className="scale-animation" onClick={() => setIsDeleteOpen(!isDeleteOpen)} size={16} />
+                    </div>
+                }
+            </div>
             {
                 isEditOpen
                 &&
