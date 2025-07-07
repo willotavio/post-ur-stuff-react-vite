@@ -6,19 +6,52 @@ import { addPost } from "../services/api/post"
 import { TextArea } from "./ui/TextArea"
 import { toast } from "react-toastify"
 
+import * as Yup from "yup"
+import { useFormik } from "formik"
+
 type TProps = {
     callback?: (post: Post) => void
 }
 
+const formikSchema = Yup.object().shape({
+    content: Yup.string()
+        .max(200, "Too long. Max: 200 characters")
+        .required("Enter something")
+})
+
 export const AddPostForm = ({ callback }: TProps) => {
-
-    const [formData, setFormData] = useState<PostAdd>({ visibility: PostVisibility.PUBLIC })
-    const [formErrors, setFormErrors] = useState<Record<string, string | null>>({})
-
-    const formRef = useRef<HTMLFormElement>(null)
+    
     const contentRef = useRef<HTMLTextAreaElement>(null)
 
+    const [postVisibility, setPostVisibility] = useState(1)
+
     let notify = () => toast("")
+
+    const formik = useFormik({
+        initialValues: {
+            content: ""
+        },
+        validationSchema: formikSchema,
+        onSubmit: values => {
+            publishPost(values)
+        }
+    })
+
+    const publishPost = async (postInfo: PostAdd) => {
+        const response = await addPost({ ...postInfo, visibility: postVisibility })
+            if(response.isSuccessful) {
+                notify = () => toast("Posted successfully", {icon: <Check />, type: "success"})
+                notify()
+                if(callback && postVisibility === PostVisibility.PUBLIC) {
+                    callback(response.responseBody.post)
+                }
+                formik.resetForm()
+            }
+            else {
+                notify = () => toast("Error while posting", {icon: <X />, type: "error"})
+                notify()
+            }
+    }
 
     const handleContentRef = () => {
         if(contentRef.current !== null) {
@@ -27,41 +60,9 @@ export const AddPostForm = ({ callback }: TProps) => {
         }
     }
 
-    const validateContent = (value: string) => {
-        if(value.length >= 1 && value.length <= 200) {
-            return true
-        }
-        else {
-            var contentError = ""
-            if(!value || value.length < 1) {
-                contentError = "Too short. Min: 1 character"
-            }
-            else if(value.length > 200) {
-                contentError = "Too long. Max: 200 characters"
-            }
-            return contentError
-        }
-    }
-
-    const validateForm = () => {
-        const newFormErrors: Record<string, string | null> = {
-            contentError: null,
-            visibilityError: null
-        }
-
-        const validatedContent = validateContent(formData.content ? formData.content : "")
-        if(validatedContent !== true) {
-            newFormErrors.contentError = validatedContent
-        }
-        
-        setFormErrors(newFormErrors)
-        
-        return Object.values(newFormErrors).every(value => value === "" || value === null)
-    }
-
     const toggleVisibility = () => {
         var visibility = null
-        switch(formData.visibility) {
+        switch(postVisibility) {
             case PostVisibility.PUBLIC:
                 visibility = PostVisibility.PRIVATE
                 break
@@ -71,53 +72,26 @@ export const AddPostForm = ({ callback }: TProps) => {
             default:
                 visibility = PostVisibility.PUBLIC
         }
-        setFormData({ ...formData, visibility })
-    }
-
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-        const result = validateForm()
-        if(result) {
-            const response = await addPost(formData)
-            if(response.isSuccessful) {
-                notify = () => toast("Posted successfully", {icon: <Check />, type: "success"})
-                notify()
-                setFormData({ ...formData, content: "" })
-                formRef.current?.reset()
-                if(callback && formData.visibility === PostVisibility.PUBLIC) {
-                    callback(response.responseBody.post)
-                }
-            }
-            else {
-                notify = () => toast("Error while posting", {icon: <X />, type: "error"})
-                notify()
-            }
-        }
+        setPostVisibility(visibility)
     }
 
     return(
         <div className="flex flex-col gap-8 p-6 rounded-lg">
-            <form className="flex flex-col gap-y-4 h-auto" ref={formRef} onSubmit={(e) => handleSubmit(e)}>
+            <form className="flex flex-col gap-y-4 h-auto" onSubmit={formik.handleSubmit}>
                 <TextArea 
+                    value={formik.values.content}
+                    id="content"
+                    name="content"
                     placeholder="wazzup?!"
                     maxLength={200}
                     contentRef={contentRef}
-                    callback={(e) => {
-                            handleContentRef()
-                            const result = validateContent(e)
-                            setFormData({ ...formData, content: e })
-                            var contentError = ""
-                            if(result !== true) {
-                                contentError = result
-                            }
-                            setFormErrors({ ...formErrors, contentError })
-                        }
-                    }
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                 />
                 <div className="grid grid-cols-2 items-center">
-                    <small className={`text-xs ${formErrors.contentError && "text-red-500"}`}>{formData.content && formData.content.length > 0 ? formData.content?.length : 0}</small>
+                    <small className={`text-xs ${formik.errors.content && "text-red-500"}`}>{formik.values.content && formik.values.content.length > 0 ? formik.values.content?.length : 0}</small>
                     <div className="ml-auto hover:cursor-pointer" title="Post visibility" onClick={ () => toggleVisibility() }>{
-                        formData.visibility === PostVisibility.PUBLIC
+                        postVisibility === PostVisibility.PUBLIC
                         ? <Globe size={24} />
                         : <Lock size={24} />
                     }</div>
