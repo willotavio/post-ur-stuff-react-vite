@@ -1,6 +1,5 @@
 import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
-import { MainLayout } from "../../layouts/MainLayout"
 import { UpdateUserForm } from "./components/UpdateUserForm"
 import { useAuth } from "../../context/AuthContext"
 import { UpdatePasswordForm } from "./components/UpdatePasswordForm"
@@ -16,7 +15,7 @@ export const ConfigurationPage = () => {
     }, [isLoading])
 
     return (
-        <MainLayout>
+        <div>
             {
                 isLoggedIn
                 &&
@@ -30,6 +29,6 @@ export const ConfigurationPage = () => {
                     <UpdatePasswordForm />
                 </div>
             }
-        </MainLayout>
+        </div>
     )
 }

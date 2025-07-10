@@ -3,7 +3,6 @@ import { AddPostForm } from "../components/AddPostForm"
 import { getAllPublicPosts } from "../services/api/post"
 import { Post } from "../constants/types/post"
 import { PostList } from "../components/PostList"
-import { MainLayout } from "../layouts/MainLayout"
 import { useAuth } from "../context/AuthContext"
 
 export const Home = () => {
@@ -11,14 +10,24 @@ export const Home = () => {
     const [postPage, setPostPage] = useState(0)
 
     const [postList, setPostList] = useState<Post[]>([])
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
         if(isLoggedIn) {
+            const fetchPosts = async () => {
+                const response = await getAllPublicPosts(postPage.toString());
+                if(response.isSuccessful) {
+                    var newPostList: Post[] = response.responseBody.posts
+                    setPostList(newPostList)
+                    setIsLoading(false)
+                }
+            }
             const refetchPosts = async () => {
                 const response = await getAllPublicPosts(postPage.toString());
                 if(response.isSuccessful) {
                     var newPostList: Post[] = response.responseBody.posts
                     setPostList([...postList, ...newPostList.filter(post => !postList.find(p => p.id == post.id))])
+                    setIsLoading(false)
                 }
             }
             if(postPage === 0) {
@@ -30,20 +39,19 @@ export const Home = () => {
         }
     }, [postPage, isLoggedIn])
 
-    const fetchPosts = async () => {
-        const response = await getAllPublicPosts(postPage.toString());
-        if(response.isSuccessful) {
-            var newPostList: Post[] = response.responseBody.posts
-            setPostList(newPostList)
+    if(isLoggedIn) {
+        if(isLoading) {
+            return (
+                <div className="flex flex-col items-center gap-4">
+                    <p>Loading...</p>
+                </div>
+            )
         }
-    }
-
-    return(
-        <MainLayout>
-            <div className="flex flex-col items-center gap-4">
-                {
-                    isLoggedIn
-                    ? <>
+    
+        if(!isLoading && postList.length > 0) {
+            return (
+                <div className="flex flex-col items-center gap-4">
+                    <>
                         <AddPostForm callback={(post: Post) => {
                             setPostList([post, ...postList])
                         }} />
@@ -52,14 +60,17 @@ export const Home = () => {
                             setPostPage(prevPage => prevPage + 1)
                         }}>Load more</button>
                     </>
-                        
-                    : 
-                    <>
-                    </>
-                }
-                <br />
-
-            </div>
-        </MainLayout>
-    )
+                    <br />
+                </div>
+            )
+        }
+    
+        if(!isLoading && postList.length === 0) {
+            return(
+                <div className="flex flex-col items-center gap-4">
+                    <p>There's no item</p>
+                </div>
+            )
+        }    
+    }
 }

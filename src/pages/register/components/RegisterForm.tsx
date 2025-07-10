@@ -19,7 +19,7 @@ const formSchema = Yup.object().shape({
     displayName: Yup.string()
         .min(4, "Too short. Min: 4 characters")
         .max(32, "Too long. Max: 32 characters")
-        .required("Enter an username"),
+        .required("Enter a display name"),
     email: Yup.string()
         .email("Enter a valid email")
         .required("Enter an email"),

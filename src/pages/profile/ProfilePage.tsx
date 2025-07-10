@@ -1,6 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom"
 import { useEffect, useState } from "react"
-import { MainLayout } from "../../layouts/MainLayout"
 import { User } from "../../constants/types/user"
 import { getProfileByUsername } from "../../services/api/user"
 import { getOwnPosts, getPublicPostsByUserId } from "../../services/api/post"
@@ -19,20 +18,24 @@ export const ProfilePage = () => {
     const [isOwnProfile, setIsOwnProfile] = useState(false)
 
     const [user, setUser] = useState<User | null>(null)
-    const [posts, setPosts] = useState<Post[]>([])
+    const [postList, setPostList] = useState<Post[]>([])
     
     const [postPage, setPostPage] = useState(0)
+    const [isPostListLoading, setIsPostListLoading] = useState(true)
+    const [isUserLoading, setIsUserLoading] = useState(true)
 
     const fetchUserData = async () => {
         if((!isLoading && isLoggedIn && userInfo) && (!username || username === userInfo.username)) {
             setIsOwnProfile(true)
             setUser(userInfo)
+            setIsUserLoading(false)
         }
         else if(username){
             const fetchedUser = await fetchUser(username)
             if(fetchedUser) {
                 setUser(fetchedUser)
             }
+            setIsUserLoading(false)
         }
     }
 
@@ -47,21 +50,25 @@ export const ProfilePage = () => {
     const fetchPosts = async () => {
         if((!isLoading && isLoggedIn && userInfo) && (!username || username === userInfo.username)) {
             const ownPosts = await fetchOwnPosts()
-            setPosts(ownPosts)
+            setPostList(ownPosts)
+            setIsPostListLoading(false)
         }
         else if(username && user){
             const publicPosts = await fetchPublicPosts(user.id)
-            setPosts(publicPosts)
+            setPostList(publicPosts)
+            setIsPostListLoading(false)
         }
     }
     const refetchPosts = async () => {
         if((!isLoading && isLoggedIn && userInfo) && (!username || username === userInfo.username)) {
             const ownPosts = await fetchOwnPosts()
-            setPosts([...posts, ...ownPosts.filter((post) => !posts.find(p => p.id === post.id))])
+            setPostList([...postList, ...ownPosts.filter((post) => !postList.find(p => p.id === post.id))])
+            setIsPostListLoading(false)
         }
         else if(username && user){
             const publicPosts = await fetchPublicPosts(user.id)
-            setPosts([...posts, ...publicPosts.filter((post) => !posts.find(p => p.id === post.id))])
+            setPostList([...postList, ...publicPosts.filter((post) => !postList.find(p => p.id === post.id))])
+            setIsPostListLoading(false)
         }
     }
 
@@ -99,35 +106,55 @@ export const ProfilePage = () => {
         return []
     }
     
-    return (
-        <MainLayout>
-            {
-            isLoggedIn
-            &&
-            user
-            ?
-            <div className="flex flex-col gap-6">
-                <UserCard user={user} />
-                {
-                    isOwnProfile
-                    &&
-                    <div className="w-1/2 m-auto">
-                        <AddPostForm callback={ (post) => {
-                            setPosts([post, ...posts])
-                        } } />
-                    </div>
-                }
-                <div className="w-1/2 m-auto">
-                    <PostList postList={posts} setPostPage={setPostPage}/>
-                    <button onClick={() => {
-                        setPostPage(prevPost => prevPost + 1)
-                    }}>
-                        Load more
-                    </button>
+    if(isLoggedIn) {
+        
+        if(!isUserLoading && user === null) {
+            return (
+                <div className="flex flex-col items-center gap-4">
+                    <p>User not found</p>
                 </div>
-            </div> 
-            : <p className="text-center">User not found</p>
-            }
-        </MainLayout>
-    )
+            )
+        }
+
+        if(isUserLoading || isPostListLoading) {
+            return (
+                <div className="flex flex-col items-center gap-4">
+                    <p>Loading...</p>
+                </div>
+            )
+        }
+    
+        if(!isUserLoading && !isPostListLoading && user && postList.length > 0) {
+            return (
+                <div className="flex flex-col gap-6">
+                    <UserCard user={user} />
+                    {
+                        isOwnProfile
+                        &&
+                        <div className="w-1/2 m-auto">
+                            <AddPostForm callback={ (post) => {
+                                setPostList([post, ...postList])
+                            } } />
+                        </div>
+                    }
+                    <div className="w-1/2 m-auto">
+                        <PostList postList={postList} setPostPage={setPostPage}/>
+                        <button onClick={() => {
+                            setPostPage(prevPost => prevPost + 1)
+                        }}>
+                            Load more
+                        </button>
+                    </div>
+                </div> 
+            )
+        }
+    
+        if(!isUserLoading && !isPostListLoading && postList.length === 0) {
+            return(
+                <div className="flex flex-col items-center gap-4">
+                    <p>There's no item</p>
+                </div>
+            )
+        }
+    }
 }
