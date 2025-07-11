@@ -7,6 +7,7 @@ import { ConfigurationPage } from './pages/configuration/ConfigurationPage'
 import { AuthProvider } from './context/AuthContext'
 import { ToastContainer } from 'react-toastify'
 import { MainLayout } from './layouts/MainLayout'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 function App() {
 

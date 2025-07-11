@@ -4,6 +4,8 @@ import { getAllPublicPosts } from "../services/api/post"
 import { Post } from "../constants/types/post"
 import { PostList } from "../components/postList/PostList"
 import { useAuth } from "../context/AuthContext"
+import { AddPostFormSkeleton } from "../components/addPostForm/AddPostFormSkeleton"
+import { PostListSkeleton } from "../components/postList/PostListSkeleton"
 
 export const Home = () => {
     const { isLoggedIn } = useAuth()
@@ -42,9 +44,14 @@ export const Home = () => {
     if(isLoggedIn) {
         if(isLoading) {
             return (
-                <div className="flex flex-col items-center gap-4">
-                    <p>Loading...</p>
-                </div>
+                <div className="flex flex-col items-center gap-6">
+                    <div>
+                        <AddPostFormSkeleton />
+                    </div>
+                    <div className="w-2/3">
+                        <PostListSkeleton />
+                    </div>
+                </div> 
             )
         }
     

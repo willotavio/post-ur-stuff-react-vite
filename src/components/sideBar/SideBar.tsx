@@ -4,6 +4,7 @@ import { Modal } from "../ui/Modal"
 import { Gear, House, NotePencil, SignIn, SignOut, User, UserPlus } from "@phosphor-icons/react"
 import { Link } from "react-router-dom"
 import { useAuth } from "../../context/AuthContext"
+import { SideBarSkeleton } from "./SideBarSkeleton"
 
 export const SideBar = () => {
     const [isAddPostOpen, setIsAddPostOpen] = useState(false)
@@ -14,7 +15,7 @@ export const SideBar = () => {
     if(isLoading) {
         return (
             <div className="flex flex-col gap-2 border-solid border-r-2 border-gray-300 p-2 h-full fixed z-50">
-                
+                <SideBarSkeleton />
             </div>
         )
     }

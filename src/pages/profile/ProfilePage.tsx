@@ -6,8 +6,11 @@ import { getOwnPosts, getPublicPostsByUserId } from "../../services/api/post"
 import { Post } from "../../constants/types/post"
 import { PostList } from "../../components/postList/PostList"
 import { UserCard } from "../../components/userCard/UserCard"
+import { UserCardSkeleton } from "../../components/userCard/UserCardSkeleton"
 import { AddPostForm } from "../../components/addPostForm/AddPostForm"
+import { AddPostFormSkeleton } from "../../components/addPostForm/AddPostFormSkeleton"
 import { useAuth } from "../../context/AuthContext"
+import { PostListSkeleton } from "../../components/postList/PostListSkeleton"
 
 export const ProfilePage = () => {
     const { username } = useParams()
@@ -118,9 +121,15 @@ export const ProfilePage = () => {
 
         if(isUserLoading || isPostListLoading) {
             return (
-                <div className="flex flex-col items-center gap-4">
-                    <p>Loading...</p>
-                </div>
+                <div className="flex flex-col gap-6">
+                    <UserCardSkeleton />
+                    <div className="w-1/2 m-auto">
+                        <AddPostFormSkeleton />
+                    </div>
+                    <div className="w-1/2 m-auto">
+                        <PostListSkeleton />
+                    </div>
+                </div> 
             )
         }
     
