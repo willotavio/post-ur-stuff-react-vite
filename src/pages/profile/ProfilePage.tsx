@@ -4,9 +4,9 @@ import { User } from "../../constants/types/user"
 import { getProfileByUsername } from "../../services/api/user"
 import { getOwnPosts, getPublicPostsByUserId } from "../../services/api/post"
 import { Post } from "../../constants/types/post"
-import { PostList } from "../../components/PostList"
-import { UserCard } from "../../components/UserCard"
-import { AddPostForm } from "../../components/AddPostForm"
+import { PostList } from "../../components/postList/PostList"
+import { UserCard } from "../../components/userCard/UserCard"
+import { AddPostForm } from "../../components/addPostForm/AddPostForm"
 import { useAuth } from "../../context/AuthContext"
 
 export const ProfilePage = () => {

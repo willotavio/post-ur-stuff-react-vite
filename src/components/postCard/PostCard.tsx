@@ -1,13 +1,13 @@
 import { Link } from "react-router-dom"
-import { Post } from "../constants/types/post"
-import { useAuth } from "../context/AuthContext"
+import { Post } from "../../constants/types/post"
+import { useAuth } from "../../context/AuthContext"
 import { Pencil, Trash } from "@phosphor-icons/react"
 import { useState } from "react"
-import { Modal } from "./ui/Modal"
-import { UpdatePostForm } from "./UpdatePostForm"
-import { deletePost } from "../services/api/post"
+import { Modal } from "../ui/Modal"
+import { UpdatePostForm } from "../updatePostForm/UpdatePostForm"
+import { deletePost } from "../../services/api/post"
 import { toast } from "react-toastify"
-import formatDate from "../utils/formatDate"
+import formatDate from "../../utils/formatDate"
 
 type TProps = {
     post: Post,

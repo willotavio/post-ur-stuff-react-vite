@@ -1,6 +1,6 @@
 import React from "react"
-import { Post } from "../constants/types/post"
-import { PostCard } from "./PostCard"
+import { Post } from "../../constants/types/post"
+import { PostCard } from "../postCard/PostCard"
 
 type TProps = {
     postList: Post[],

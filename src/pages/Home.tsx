@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
-import { AddPostForm } from "../components/AddPostForm"
+import { AddPostForm } from "../components/addPostForm/AddPostForm"
 import { getAllPublicPosts } from "../services/api/post"
 import { Post } from "../constants/types/post"
-import { PostList } from "../components/PostList"
+import { PostList } from "../components/postList/PostList"
 import { useAuth } from "../context/AuthContext"
 
 export const Home = () => {

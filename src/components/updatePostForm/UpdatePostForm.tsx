@@ -1,9 +1,9 @@
 import { Check, Globe, Lock, X } from "@phosphor-icons/react"
-import { Post, PostUpdate } from "../constants/types/post"
+import { Post, PostUpdate } from "../../constants/types/post"
 import { useRef, useState } from "react"
-import { PostVisibility } from "../constants/enums"
-import { TextArea } from "./ui/TextArea"
-import { updatePost } from "../services/api/post"
+import { PostVisibility } from "../../constants/enums"
+import { TextArea } from "../ui/TextArea"
+import { updatePost } from "../../services/api/post"
 import { toast } from "react-toastify"
 
 import * as Yup from "yup"

@@ -1,9 +1,9 @@
 import { useState } from "react"
-import { AddPostForm } from "./AddPostForm"
-import { Modal } from "./ui/Modal"
+import { AddPostForm } from "../addPostForm/AddPostForm"
+import { Modal } from "../ui/Modal"
 import { Gear, House, NotePencil, SignIn, SignOut, User, UserPlus } from "@phosphor-icons/react"
 import { Link } from "react-router-dom"
-import { useAuth } from "../context/AuthContext"
+import { useAuth } from "../../context/AuthContext"
 
 export const SideBar = () => {
     const [isAddPostOpen, setIsAddPostOpen] = useState(false)

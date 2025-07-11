@@ -1,4 +1,4 @@
-import { User } from "../constants/types/user"
+import { User } from "../../constants/types/user"
 
 type TProps = {
     user: User
